@@ -1,0 +1,15 @@
+---
+import AuthLayout from '../../layout/AuthLayout.astro';
+import LoginForm from '../../components/auth/LoginForm.jsx';
+import '../../styles/global.css'
+const next = Astro.url.searchParams.get('next') ?? '/dashboard';
+---
+<AuthLayout title="Sign in — SPMH Telemedicine">
+  <div class="mb-8">
+    <h1 class="font-bold text-3xl text-secondary">Welcome back</h1>
+    <p class="mt-2 text-sm text-slate-600">
+      Sign in to access your patient portal, doctor console, or admin dashboard.
+    </p>
+  </div>
+  <LoginForm client:load next={next} />
+</AuthLayout>

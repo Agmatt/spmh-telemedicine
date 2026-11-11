@@ -1,0 +1,29 @@
+---
+import LandingLayout from '../layout/LandingLayout.astro';
+---
+<LandingLayout title="Dashboard — SPMH Telemedicine" noindex>
+  <section class="grid min-h-[60vh] place-items-center bg-surface px-4 py-16">
+    <p class="text-sm text-muted">Loading your dashboard…</p>
+  </section>
+
+  <script>
+    import { supabase } from '../lib/supabase';
+    const roleMap: Record<string, string> = {
+      patient: '/portal',
+      doctor: '/doctor',
+      receptionist: '/admin/bookings',
+      admin: '/admin',
+      supervisor: '/admin',
+    };
+
+    supabase.auth.getSession().then(({ data }) => {
+      const s = data.session;
+      if (!s) {
+        window.location.replace('/auth/login?next=/dashboard');
+        return;
+      }
+      const role = s.user.app_metadata?.role ?? 'patient';
+      window.location.replace(roleMap[role] ?? '/portal');
+    });
+  </script>
+</LandingLayout>

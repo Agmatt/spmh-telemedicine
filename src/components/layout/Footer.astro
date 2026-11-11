@@ -1,0 +1,114 @@
+---
+import { site } from '../../data/site';
+const year = new Date().getFullYear();
+const hospital = 'https://www.spmh.co.ke';
+---
+
+<footer class="bg-ink text-white relative">
+  <!-- Accent Border Top -->
+  <div class="h-1 w-full bg-gradient-to-r from-transparent via-gold/70 to-transparent" />
+
+  <div class="mx-auto max-w-7xl px-4 pt-16 pb-12 sm:px-6 lg:px-8">
+    
+    <!-- Top Main Content Grid -->
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-8">
+      
+      <!-- Brand & Mission Column (Spans 2 cols on lg) -->
+      <div class="lg:col-span-2 space-y-6">
+        <a href="/" class="inline-flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-gold rounded-lg p-1">
+          <img src="/logos/logo.png" alt="St. Paul's Mission Hospital Logo" class="h-12 w-12 object-contain" width="48" height="48" />
+          <span class="flex flex-col leading-tight">
+            <span class="font-display-bold text-xl tracking-tight text-white group-hover:text-gold/90 transition-colors">
+              St. Paul's Mission Hospital
+            </span>
+            <span class="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+              Telemedicine Portal
+            </span>
+          </span>
+        </a>
+
+        <p class="text-sm leading-relaxed text-white/75 max-w-sm">
+          A faith-based Level IV hospital under the Catholic Diocese of Homa Bay. Providing compassionate, dignified healthcare since 1956.
+        </p>
+      </div>
+
+      <!-- Navigation Links Columns (3 Columns) -->
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-3 lg:col-span-3">
+        
+        <!-- Hospital Links -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-[0.18em] text-gold">The Hospital</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li><a href={hospital} target="_blank" rel="noopener noreferrer" class="text-white/70 transition-colors hover:text-white">Main website</a></li>
+            <li><a href={`${hospital}/about-us/history`} target="_blank" rel="noopener noreferrer" class="text-white/70 transition-colors hover:text-white">About us</a></li>
+            <li><a href={`${hospital}/services/clinical`} target="_blank" rel="noopener noreferrer" class="text-white/70 transition-colors hover:text-white">Our services</a></li>
+            <li><a href={`${hospital}/appointments`} target="_blank" rel="noopener noreferrer" class="text-white/70 transition-colors hover:text-white">In-person visits</a></li>
+            <li><a href={`https://give.spmh.co.ke`} target="_blank" rel="noopener noreferrer" class="text-white/70 transition-colors hover:text-white">Support our mission</a></li>
+          </ul>
+        </div>
+
+        <!-- Telemedicine Links -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-[0.18em] text-gold">Telemedicine</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li><a href="/specialties" class="text-white/70 transition-colors hover:text-white">Specialties</a></li>
+            <li><a href="/doctors" class="text-white/70 transition-colors hover:text-white">Our doctors</a></li>
+            <li><a href="/how-it-works" class="text-white/70 transition-colors hover:text-white">How it works</a></li>
+            <li><a href="/faq" class="text-white/70 transition-colors hover:text-white">FAQ</a></li>
+            <li><a href="/auth/register" class="text-white/70 transition-colors hover:text-white">Create an account</a></li>
+          </ul>
+        </div>
+
+        <!-- Reach Us / Contact -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-[0.18em] text-gold">Reach Us</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li class="text-xs text-white/50">{site.contact.hours}</li>
+            <li>
+              <a href={`tel:${site.contact.phone}`} class="flex items-center gap-2 text-white/70 transition-colors hover:text-white">
+                <svg class="h-4 w-4 flex-shrink-0 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+                <span>{site.contact.phone}</span>
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${site.contact.email}`} class="flex items-center gap-2 text-white/70 transition-colors hover:text-white">
+                <svg class="h-4 w-4 flex-shrink-0 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
+                <span>{site.contact.email}</span>
+              </a>
+            </li>
+            <li class="flex items-start gap-2 text-white/70">
+              <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+              <span>P.O. Box 426, Homa Bay, Kenya</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="mt-12 border-t border-white/10 pt-8" />
+
+    <!-- Bottom Bar: Legal & Copyright -->
+    <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between text-xs text-white/60">
+      
+      <!-- Copyright & Strategic Plan -->
+      <div class="space-y-1">
+        <p>© {year} St. Paul's Mission Hospital, Homa Bay. All rights reserved.</p>
+      </div>
+
+      <!-- Legal Links & Regulatory Compliance -->
+      <div class="flex flex-col gap-2 md:items-end">
+        <div class="flex flex-wrap gap-x-4 gap-y-1">
+          <a href={site.legal.privacy} class="hover:text-gold transition-colors">Privacy Policy</a>
+          <span>·</span>
+          <a href={site.legal.terms} class="hover:text-gold transition-colors">Terms of Telemedicine</a>
+          <span>·</span>
+          <a href={site.legal.dpa} class="hover:text-gold transition-colors">Data Protection Notice</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</footer>

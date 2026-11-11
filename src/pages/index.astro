@@ -1,11 +1,385 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import LandingLayout from '../layout/LandingLayout.astro';
+import { site } from '../data/site';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const specialties = [
+  { slug: 'general-medicine', name: 'General Medicine', fee: 500, duration: 20, blurb: 'Everyday illnesses, chronic follow-up, medication reviews.', conditions: ['Coughs, colds, fevers', 'Hypertension & diabetes', 'Prescription refills', 'Fatigue & general checkups'], icon: '<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/>' },
+  { slug: 'paediatrics', name: 'Paediatrics', fee: 700, duration: 20, blurb: 'Child health, growth monitoring, immunisation guidance.', conditions: ['Fever, cough & colds in children', 'Growth & development', 'Feeding questions', 'Immunisation advice'], icon: '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5.9 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/>' },
+  { slug: 'obstetrics-gynaecology', name: 'Obstetrics & Gynaecology', fee: 1000, duration: 25, blurb: 'Antenatal, postnatal, and women\u2019s health consultations.', conditions: ['Antenatal check-ins', 'Postnatal care', 'Contraception counselling', 'Menstrual concerns'], icon: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>' },
+  { slug: 'general-surgery', name: 'General Surgery', fee: 1000, duration: 25, blurb: 'Pre- and post-operative reviews, surgical questions.', conditions: ['Wound care & healing', 'Post-op follow-up', 'Pre-op assessments', 'Minor surgical advice'], icon: '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>' },
+  { slug: 'dermatology', name: 'Dermatology', fee: 800, duration: 20, blurb: 'Skin, hair, and nail concerns reviewed by a specialist.', conditions: ['Rashes & eczema', 'Acne & skin infections', 'Hair loss', 'Chronic skin conditions'], icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>' },
+  { slug: 'ophthalmology', name: 'Ophthalmology', fee: 800, duration: 20, blurb: 'Eye symptoms, vision changes, diabetic eye screening.', conditions: ['Blurred vision', 'Red or painful eyes', 'Diabetic eye screening', 'Glasses review'], icon: '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>' },
+  { slug: 'dentistry', name: 'Dentistry', fee: 700, duration: 20, blurb: 'Dental pain and oral health guidance — procedures at SPMH dental clinic.', conditions: ['Toothache & sensitivity', 'Gum concerns', 'Oral hygiene advice', 'Follow-up reviews'], icon: '<path d="M12 5.5c-1.5-2-5-3-6.5 0S3 12 5 15c1.5 2 2 3 2.5 5 .3 1.2 1 1.5 1.5 1 .8-.7 1-2 1-3.5 0-2 1-2 2-2s2 0 2 2c0 1.5.2 2.8 1 3.5.5.5 1.2.2 1.5-1 .5-2 1-3 2.5-5 2-3 1-6.5-.5-9.5S13.5 3.5 12 5.5Z"/>' },
+  { slug: 'mental-health', name: 'Mental Health', fee: 1200, duration: 45, blurb: 'Confidential counselling with a licensed mental health professional.', conditions: ['Anxiety & stress', 'Depression', 'Grief & trauma', 'Sleep difficulties'], icon: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>' },
+];
+
+const clinicians = [
+  { role: 'General Physician', specialty: 'General Medicine' },
+  { role: 'Paediatrician', specialty: 'Paediatrics' },
+  { role: 'Obstetrician / Gynaecologist', specialty: 'Obs & Gynae' },
+  { role: 'General Surgeon', specialty: 'Surgery' },
+  { role: 'Dermatologist', specialty: 'Dermatology' },
+  { role: 'Dental Surgeon', specialty: 'Dentistry' },
+  { role: 'Ophthalmologist', specialty: 'Ophthalmology' },
+  { role: 'Psychiatrist / Counsellor', specialty: 'Mental Health' },
+];
+
+const trust = [
+  { title: 'Licensed clinicians', body: 'Every consultation is with an SPMH clinician verified through our credentialing process.' },
+  { title: 'Kenya DPA 2019', body: 'Full compliance with the Data Protection Act. Consent recorded, every access logged.' },
+  { title: 'Encrypted end-to-end', body: 'All video and messaging traffic is encrypted in transit (TLS 1.3) and at rest (AES-256).' },
+  { title: 'Audit trail', body: 'Every view or edit of a patient record is written to an immutable audit log.' },
+];
+
+const faqs = [
+  { q: 'Is telemedicine safe for sensitive health information?', a: 'Yes. Every consultation is encrypted end-to-end, every record is audited, and we comply with Kenya\u2019s Data Protection Act 2019.' },
+  { q: 'What if I need an in-person examination?', a: 'Your doctor will tell you during the consultation and can book you directly into the SPMH outpatient clinic at no extra booking fee.' },
+  { q: 'Can I pay without M-Pesa?', a: 'Yes. During the pilot, payments can be confirmed at the SPMH reception desk. M-Pesa in-portal payments are being finalised with Safaricom.' },
+  { q: 'What do I need to join a consultation?', a: 'A smartphone, tablet, or computer with a camera and microphone. A 4G connection (2 Mbps) is enough. We\u2019ll send you a reminder before your appointment.' },
+];
 ---
+<LandingLayout title="SPMH Telemedicine — St. Paul's Mission Hospital, Homa Bay">
 
-<Layout>
-	<Welcome />
-</Layout>
+  <!-- ============ HERO ============ -->
+  <section class="relative overflow-hidden bg-ink">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(200,169,81,0.16),transparent_55%)]" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(21,101,192,0.22),transparent_55%)]" aria-hidden="true"></div>
+
+    <div class="relative mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28 lg:px-8 lg:py-32">
+      <div class="grid items-center gap-16 lg:grid-cols-[1.1fr_1fr]">
+
+        <!-- Copy -->
+        <div>
+          <h1 class="mt-6 font-display text-5xl leading-[1.02] text-white md:text-6xl lg:text-7xl">
+            Specialist care,<br />
+            <span class="text-gold">from wherever you are.</span>
+          </h1>
+
+          <p class="mt-6 max-w-xl text-base leading-relaxed text-white/75 md:text-lg">
+            Secure video consultations with SPMH doctors — no travel to Homa Bay, no waiting rooms, no compromise on quality. Book from your phone in minutes.
+          </p>
+
+          <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+            <a href="/auth/register" class="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-accent px-7 font-semibold text-white transition-opacity hover:opacity-90">
+              Create your account
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+            </a>
+            <a href="#specialties" class="inline-flex h-12 items-center justify-center gap-2 rounded-lg border border-white/25 px-7 font-semibold text-white transition-colors hover:bg-white/10">
+              Browse specialties
+            </a>
+          </div>
+
+          <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-white/55">
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+              Licensed clinicians only
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+              Kenya DPA 2019 compliant
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg class="h-4 w-4 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+              Catholic Diocese of Homa Bay
+            </span>
+          </div>
+        </div>
+
+        <!-- Video-call mockup (CSS art) -->
+        <div class="relative">
+  <div class="absolute -inset-3 rounded-3xl bg-gradient-to-br from-gold/20 via-primary/10 to-transparent opacity-70 blur-2xl" aria-hidden="true"></div>
+  <div class="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl">
+    <img
+      src="/gallery/telemed.jpg"
+      alt="A doctor at St. Paul's Mission Hospital consulting with a patient by video"
+      class="h-[500px] w-full object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" aria-hidden="true"></div>
+    <div class="absolute inset-x-6 bottom-6 rounded-2xl border border-white/20 bg-black/40 px-5 py-4 backdrop-blur-md">
+      <p class="mt-1 text-sm font-semibold text-white">Secure video consultations</p>
+      <p class="mt-0.5 text-xs text-white/70">Mon–Sat</p>
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+  </section>
+
+  
+
+  <!-- ============ SPECIALTY PICKER (interactive) ============ -->
+  <section id="specialties" class="bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Specialties</p>
+        <div class="mx-auto mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Choose the care you need.</h2>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">
+          Tap a specialty to see what our doctors treat, how long a consultation takes, and the fee.
+        </p>
+      </div>
+
+      <div id="specialty-picker" class="mt-12">
+        <!-- Tab buttons -->
+        <div class="flex flex-wrap justify-center gap-2" role="tablist" aria-label="Specialties">
+          {specialties.map((s, i) => (
+            <button
+              type="button"
+              role="tab"
+              data-spec-tab={i}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              aria-controls={`spec-panel-${i}`}
+              class="spec-tab inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold transition-all"
+            >
+              <span class="grid h-7 w-7 place-items-center rounded-full bg-current/10">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+              </span>
+              {s.name}
+            </button>
+          ))}
+        </div>
+
+        <!-- Panels -->
+        <div class="mt-10">
+          {specialties.map((s, i) => (
+            <div
+              data-spec-panel={i}
+              id={`spec-panel-${i}`}
+              role="tabpanel"
+              hidden={i !== 0}
+              class="grid gap-8 rounded-3xl border border-border bg-surface/40 p-6 md:grid-cols-2 md:p-10"
+            >
+              <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-primary">{s.name}</p>
+                <h3 class="mt-3 font-display-bold text-2xl text-secondary md:text-3xl">{s.blurb}</h3>
+
+                <div class="mt-8 flex flex-wrap items-center gap-6">
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-muted">Fee</p>
+                    <p class="font-display-bold text-3xl text-primary">KES {s.fee.toLocaleString()}</p>
+                  </div>
+                  <div class="h-10 w-px bg-border"></div>
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-muted">Duration</p>
+                    <p class="font-display-bold text-3xl text-secondary">{s.duration} min</p>
+                  </div>
+                </div>
+
+                <a href={`/auth/register?specialty=${s.slug}`} class="mt-8 inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-5 font-semibold text-white transition-colors hover:bg-primary-dark">
+                  Book {s.name}
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                </a>
+              </div>
+
+              <div class="rounded-2xl bg-white p-6">
+                <p class="text-xs font-bold uppercase tracking-wider text-muted">Conditions treated</p>
+                <ul class="mt-4 space-y-3">
+                  {s.conditions.map((c) => (
+                    <li class="flex items-start gap-3 text-sm text-slate-700">
+                      <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="border-t border-border bg-surface">
+    <div class="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">How it works</p>
+        <div class="mx-auto mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">From sign-up to prescription, in four steps.</h2>
+      </div>
+
+      <div class="relative mt-16">
+        <div class="absolute left-1/2 top-12 hidden h-px w-3/4 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent lg:block" aria-hidden="true"></div>
+
+        <ol class="grid gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {[
+            { n: '01', t: 'Create your account', d: 'Register with your email, phone, and basic health context.', icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>' },
+            { n: '02', t: 'Choose a specialist', d: 'Browse SPMH doctors by specialty, availability, and fee.', icon: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>' },
+            { n: '03', t: 'Book and pay', d: 'Pick a slot, confirm your fee, and receive an SMS reminder.', icon: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>' },
+            { n: '04', t: 'Meet by video', d: 'Join the secure room from any device with a camera.', icon: '<path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/>' },
+          ].map((s) => (
+            <li class="relative flex flex-col items-center rounded-2xl border border-border bg-white p-8 text-center">
+              <span class="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-white shadow-md">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+              </span>
+              <p class="mt-6 font-display-bold text-sm uppercase tracking-[0.18em] text-gold">{s.n}</p>
+              <h3 class="mt-2 font-display-bold text-lg text-secondary">{s.t}</h3>
+              <p class="mt-3 text-sm leading-relaxed text-slate-600">{s.d}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="mt-12 text-center">
+        <a href="/how-it-works" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          Read the full walkthrough
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHAT A CONSULTATION LOOKS LIKE ============ -->
+  <section class="bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28 lg:px-8">
+      <div class="grid items-center gap-16 lg:grid-cols-2">
+        <div class="relative order-2 lg:order-1">
+          <div class="absolute -inset-3 rounded-3xl bg-gradient-to-br from-gold/20 via-primary/10 to-transparent opacity-70 blur-2xl" aria-hidden="true"></div>
+          <div class="relative overflow-hidden rounded-3xl border border-border shadow-xl">
+            <img
+              src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80"
+              alt="A doctor at St. Paul's Mission Hospital preparing for a telemedicine consultation"
+              class="h-[420px] w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        <div class="order-1 lg:order-2">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">What to expect</p>
+          <div class="mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+          <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">
+            A real doctor. A private room. A plan for what comes next.
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            When you book with SPMH Telemedicine, you get the same care you would get in our outpatient clinic — reviewed by the same clinicians, guided by the same protocols, and recorded in the same medical file.
+          </p>
+
+          <ul class="mt-8 space-y-5">
+            {[
+              { t: 'Your doctor reviews your history first', d: 'Before the call, your assigned clinician reads your records and prepares.' },
+              { t: '20–45 minutes of focused attention', d: 'No queues. No interruptions. Time to ask your questions.' },
+              { t: 'A signed clinical note after every consultation', d: 'You can view, download, or share your note with any other provider.' },
+              { t: 'A referral if in-person care is needed', d: 'Your doctor books you directly into the SPMH outpatient clinic at no extra booking fee.' },
+            ].map((item) => (
+              <li class="flex gap-4">
+                <span class="mt-1 grid h-8 w-8 flex-shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12" /></svg>
+                </span>
+                <div>
+                  <p class="font-semibold text-slate-900">{item.t}</p>
+                  <p class="mt-1 text-sm leading-relaxed text-slate-600">{item.d}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============ TRUST GRID ============ -->
+  <section class="bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Privacy &amp; security</p>
+        <div class="mx-auto mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Built to medical-grade standards.</h2>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {trust.map((t) => (
+          <div class="rounded-2xl border border-border bg-gray-100 p-6">
+            <span class="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <h3 class="mt-4 font-semibold text-slate-900">{t.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">{t.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="border-t border-border bg-surface">
+    <div class="mx-auto max-w-4xl px-4 py-20 md:px-6 md:py-28 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Common questions</p>
+        <div class="mx-auto mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Answers before you ask.</h2>
+      </div>
+
+      <div class="mt-10 space-y-3">
+        {faqs.map((f) => (
+          <details class="group rounded-xl border border-border bg-white p-5 transition-colors hover:border-primary/30">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-slate-900">
+              {f.q}
+              <svg class="h-4 w-4 flex-shrink-0 text-muted transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">{f.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="/faq" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          See all questions
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="relative overflow-hidden bg-gray-600">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,81,0.15),transparent_60%)]" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-3xl px-4 py-24 text-center md:px-6 md:py-32">
+      <p class="text-xs font-bold uppercase tracking-[0.25em] text-gold">Ready when you are</p>
+      <h2 class="mt-6 font-display text-4xl text-white md:text-5xl">Start your first consultation.</h2>
+      <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/70">
+        Register in under two minutes. Book a specialist from the phone in your hand. Meet them by secure video, from wherever you are.
+      </p>
+      <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/auth/register" class="inline-flex h-12 items-center gap-2 rounded-lg bg-accent px-8 font-semibold text-white transition-opacity hover:opacity-90">
+          Create your account
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+        </a>
+        <a href={`tel:${site.contact.phone}`} class="inline-flex h-12 items-center gap-2 rounded-lg border border-white/25 px-8 font-semibold text-white transition-colors hover:bg-white/10">
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+          {site.contact.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specialty tab logic -->
+  <script>
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.spec-tab');
+    const panels = document.querySelectorAll<HTMLElement>('[data-spec-panel]');
+
+    function activate(idx: number) {
+      tabs.forEach((t, i) => {
+        const active = i === idx;
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+        t.classList.toggle('bg-primary', active);
+        t.classList.toggle('text-white', active);
+        t.classList.toggle('border-primary', active);
+        t.classList.toggle('shadow-md', active);
+        t.classList.toggle('bg-white', !active);
+        t.classList.toggle('text-slate-700', !active);
+        t.classList.toggle('border-border', !active);
+        t.classList.toggle('hover:border-primary/40', !active);
+      });
+      panels.forEach((p, i) => {
+        p.hidden = i !== idx;
+      });
+    }
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => activate(i)));
+    activate(0);
+  </script>
+
+</LandingLayout>

@@ -1,0 +1,26 @@
+---
+import LandingLayout from '../../layout/LandingLayout.astro';
+---
+<LandingLayout title="Confirming your email — SPMH Telemedicine" noindex>
+  <section class="grid min-h-[60vh] place-items-center bg-surface px-4 py-16">
+    <div class="max-w-md text-center">
+      <h1 class="text-2xl font-bold text-secondary">Confirming your email…</h1>
+      <p class="mt-2 text-sm text-slate-600">You will be redirected in a moment.</p>
+    </div>
+  </section>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+    const next = new URLSearchParams(location.search).get('next') ?? '/dashboard';
+
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) window.location.replace(next);
+    });
+
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        window.location.replace(next);
+      }
+    });
+  </script>
+</LandingLayout>
