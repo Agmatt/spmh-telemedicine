@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import Field from '../ui/Field.jsx';
+import PasswordInput from '../ui/PasswordInput.jsx'; // Added
 
 export default function LoginForm({ next = '/dashboard' }) {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function LoginForm({ next = '/dashboard' }) {
     });
     setBusy(false);
     if (error) return setError(error.message);
-    window.location.href = next;
+    window.location.replace(next);
   }
 
   async function handleMagic(e) {
@@ -41,21 +42,6 @@ export default function LoginForm({ next = '/dashboard' }) {
   if (magicSent) {
     return (
       <div className='rounded-2xl border border-border bg-white p-8 text-center'>
-        <div className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary'>
-          <svg
-            className='h-6 w-6'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            aria-hidden='true'>
-            <rect width='20' height='16' x='2' y='4' rx='2' />
-            <path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' />
-          </svg>
-        </div>
         <h2 className='mt-4 font-display-bold text-xl text-secondary'>
           Check your inbox
         </h2>
@@ -87,36 +73,30 @@ export default function LoginForm({ next = '/dashboard' }) {
       />
 
       {mode === 'password' && (
-        <Field
-          label='Password'
-          type='password'
-          required
-          autoComplete='current-password'
-          placeholder='••••••••••'
-          value={password}
-          onChange={setPassword}
-        />
+        <>
+          <PasswordInput
+            label='Password'
+            required
+            autoComplete='current-password'
+            placeholder='••••••••••'
+            value={password}
+            onChange={setPassword}
+          />
+          <div className='-mt-2 text-right'>
+            <a
+              href='/auth/forgot-password'
+              className='text-xs font-semibold text-primary hover:underline'>
+              Forgot password?
+            </a>
+          </div>
+        </>
       )}
 
       {error && (
         <div
-          className='flex items-start gap-2 rounded-lg bg-accent/8 px-3 py-2.5 text-sm text-accent'
+          className='rounded-lg bg-accent/10 px-3 py-2.5 text-sm text-accent'
           role='alert'>
-          <svg
-            className='mt-0.5 h-4 w-4 flex-shrink-0'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2.5'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            aria-hidden='true'>
-            <circle cx='12' cy='12' r='10' />
-            <line x1='12' x2='12' y1='8' y2='12' />
-            <line x1='12' x2='12.01' y1='16' y2='16' />
-          </svg>
-          <span>{error}</span>
+          {error}
         </div>
       )}
 
@@ -129,21 +109,6 @@ export default function LoginForm({ next = '/dashboard' }) {
           : mode === 'password'
             ? 'Sign in'
             : 'Send magic link'}
-        {!busy && (
-          <svg
-            className='h-4 w-4'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            aria-hidden='true'>
-            <path d='M5 12h14' />
-            <path d='m12 5 7 7-7 7' />
-          </svg>
-        )}
       </button>
 
       <button

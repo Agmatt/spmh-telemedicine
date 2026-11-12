@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import Field from '../ui/Field.jsx';
+import PasswordInput from '../ui/PasswordInput.jsx';
+import { validatePassword, describePasswordRules } from '../../lib/password';
 
 const SPECIALTIES = [
   ['general-medicine', 'General Medicine'],
@@ -32,8 +34,9 @@ export default function RegisterForm() {
   async function submit(e) {
     e.preventDefault();
     setError(null);
-    if (form.password.length < 10)
-      return setError('Password must be at least 10 characters.');
+
+    const v = validatePassword(form.password);
+    if (!v.ok) return setError(v.errors.join('. '));
     if (form.password !== form.password_confirm)
       return setError('Passwords do not match.');
     if (!form.consent)
@@ -74,9 +77,9 @@ export default function RegisterForm() {
             viewBox='0 0 24 24'
             fill='none'
             stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
             aria-hidden='true'>
             <rect width='20' height='16' x='2' y='4' rx='2' />
             <path d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7' />
@@ -107,7 +110,6 @@ export default function RegisterForm() {
         value={form.full_name}
         onChange={(v) => set('full_name', v)}
       />
-
       <Field
         label='Email address'
         type='email'
@@ -117,7 +119,6 @@ export default function RegisterForm() {
         value={form.email}
         onChange={(v) => set('email', v)}
       />
-
       <Field
         label='Phone (M-Pesa)'
         type='tel'
@@ -149,25 +150,27 @@ export default function RegisterForm() {
         </select>
       </div>
 
-      <Field
+      <PasswordInput
         label='Password'
-        type='password'
         required
         autoComplete='new-password'
-        hint='At least 10 characters.'
+        hint={describePasswordRules()}
         placeholder='••••••••••'
         value={form.password}
         onChange={(v) => set('password', v)}
       />
-
-      <Field
+      <PasswordInput
         label='Confirm password'
-        type='password'
         required
         autoComplete='new-password'
         placeholder='••••••••••'
         value={form.password_confirm}
         onChange={(v) => set('password_confirm', v)}
+        error={
+          form.password_confirm && form.password_confirm !== form.password
+            ? 'Passwords do not match'
+            : undefined
+        }
       />
 
       <label className='flex cursor-pointer items-start gap-3 rounded-lg border border-border bg-surface/60 p-4'>
@@ -206,7 +209,7 @@ export default function RegisterForm() {
 
       {error && (
         <div
-          className='flex items-start gap-2 rounded-lg bg-accent/8 px-3 py-2.5 text-sm text-accent'
+          className='flex items-start gap-2 rounded-lg bg-accent/10 px-3 py-2.5 text-sm text-accent'
           role='alert'>
           <svg
             className='mt-0.5 h-4 w-4 flex-shrink-0'
@@ -214,9 +217,9 @@ export default function RegisterForm() {
             viewBox='0 0 24 24'
             fill='none'
             stroke='currentColor'
-            stroke-width='2.5'
-            stroke-linecap='round'
-            stroke-linejoin='round'
+            strokeWidth='2.5'
+            strokeLinecap='round'
+            strokeLinejoin='round'
             aria-hidden='true'>
             <circle cx='12' cy='12' r='10' />
             <line x1='12' x2='12' y1='8' y2='12' />
@@ -231,21 +234,6 @@ export default function RegisterForm() {
         disabled={busy}
         className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary font-semibold text-white transition-colors hover:bg-primary-dark disabled:opacity-60'>
         {busy ? 'Creating account…' : 'Create account'}
-        {!busy && (
-          <svg
-            className='h-4 w-4'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='2'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            aria-hidden='true'>
-            <path d='M5 12h14' />
-            <path d='m12 5 7 7-7 7' />
-          </svg>
-        )}
       </button>
 
       <p className='border-t border-border pt-5 text-center text-sm text-slate-600'>

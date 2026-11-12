@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../layout/AdminLayout.astro';
+import AdminShell from '../../components/admin/AdminShell.jsx';
+import AuditLog from '../../components/admin/AuditLog.jsx';
+import '../../styles/global.css';
+---
+<AdminLayout title="Audit log">
+  <AdminShell client:load activePage="audit">
+    <AuditLog client:load />
+  </AdminShell>
+</AdminLayout>

@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../layout/AdminLayout.astro';
+import AdminShell from '../../components/admin/AdminShell.jsx';
+import StaffManager from '../../components/admin/StaffManager.jsx';
+import '../../styles/global.css';
+---
+<AdminLayout title="Staff">
+  <AdminShell client:load activePage="staff">
+    <StaffManager client:load />
+  </AdminShell>
+</AdminLayout>

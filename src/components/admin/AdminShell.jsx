@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { isStaffRole, canManageDoctors } from '../../lib/admin';
+import { useIdleLogout } from '../../lib/useIdleLogout';
 
 const NAV = [
   {
@@ -56,26 +57,38 @@ export default function AdminShell({ activePage, children }) {
   const [checking, setChecking] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  useIdleLogout();
+
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    // The `async` keyword is right here:
+    supabase.auth.getSession().then(async ({ data }) => {
       if (!data.session) {
-        window.location.href = `/auth/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        window.location.replace(
+          `/auth/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`,
+        );
         return;
       }
+
       const r = data.session.user.app_metadata?.role ?? 'patient';
       if (!isStaffRole(r)) {
-        window.location.href = '/';
+        window.location.replace('/');
         return;
       }
+
+      const { data: p } = await supabase
+        .from('profiles')
+        .select('is_developer')
+        .eq('id', data.session.user.id)
+        .single();
+
       setSession(data.session);
-      setRole(r);
+      setRole(p?.is_developer ? 'Superadmin' : r);
       setChecking(false);
     });
   }, []);
 
   useEffect(() => {
-    if (drawerOpen) document.body.style.overflow = 'hidden';
-    else document.body.style.overflow = '';
+    document.body.style.overflow = drawerOpen ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
     };
@@ -89,19 +102,17 @@ export default function AdminShell({ activePage, children }) {
     );
   }
 
-  const showAdminOnly = canManageDoctors(role);
-  const items = showAdminOnly ? [...NAV, ...ADMIN_ONLY] : NAV;
+  const items = canManageDoctors(role) ? [...NAV, ...ADMIN_ONLY] : NAV;
 
   async function logout() {
     await supabase.auth.signOut();
-    window.location.href = '/';
+    window.location.replace('/');
   }
 
   const initial = (session.user.email?.[0] ?? '?').toUpperCase();
 
   return (
     <div className='min-h-screen'>
-      {/* Top bar (mobile) */}
       <header className='sticky top-0 z-40 border-b border-border bg-white lg:hidden'>
         <div className='flex h-14 items-center gap-3 px-4'>
           <button
@@ -139,11 +150,10 @@ export default function AdminShell({ activePage, children }) {
         </div>
       </header>
 
-      {/* Sidebar (desktop) */}
       <aside className='fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r border-border bg-white lg:flex'>
         <div className='flex h-16 items-center gap-2 border-b border-border px-4'>
           <img
-            src='/logo.png'
+            src='/logos/logo.png'
             alt='SPMH'
             className='h-8 w-8 object-contain'
             width='32'
@@ -161,46 +171,27 @@ export default function AdminShell({ activePage, children }) {
 
         <nav className='flex-1 overflow-y-auto px-3 py-4'>
           <ul className='space-y-0.5'>
-            {items.map((item) => {
-              const active = item.id === activePage;
-              const isSoon = !NAV.some((n) => n.id === item.id);
-              return (
-                <li key={item.id}>
-                  <a
-                    href={isSoon ? '#' : item.href}
-                    onClick={(e) => {
-                      if (isSoon) {
-                        e.preventDefault();
-                        alert('Coming in Wave 6B.');
-                      }
-                    }}
-                    className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      active
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-slate-700 hover:bg-surface'
-                    } ${isSoon ? 'opacity-50' : ''}`}>
-                    <svg
-                      className='h-4 w-4 flex-shrink-0'
-                      xmlns='http://www.w3.org/2000/svg'
-                      viewBox='0 0 24 24'
-                      fill='none'
-                      stroke='currentColor'
-                      strokeWidth='2'
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      aria-hidden='true'>
-                      <path d={item.icon} />
-                    </svg>
-                    <span className='flex-1'>{item.label}</span>
-                    {isSoon && (
-                      <span className='text-[9px] font-bold uppercase tracking-wider text-muted'>
-                        soon
-                      </span>
-                    )}
-                  </a>
-                </li>
-              );
-            })}
+            {items.map((item) => (
+              <li key={item.id}>
+                <a
+                  href={item.href}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${item.id === activePage ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-surface'}`}>
+                  <svg
+                    className='h-4 w-4 flex-shrink-0'
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    aria-hidden='true'>
+                    <path d={item.icon} />
+                  </svg>
+                  <span className='flex-1'>{item.label}</span>
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
 
@@ -226,7 +217,6 @@ export default function AdminShell({ activePage, children }) {
         </div>
       </aside>
 
-      {/* Sidebar (mobile drawer) */}
       {drawerOpen && (
         <>
           <div
@@ -269,37 +259,28 @@ export default function AdminShell({ activePage, children }) {
             </div>
             <nav className='flex-1 overflow-y-auto px-3 py-4'>
               <ul className='space-y-0.5'>
-                {items.map((item) => {
-                  const active = item.id === activePage;
-                  const isSoon = !NAV.some((n) => n.id === item.id);
-                  return (
-                    <li key={item.id}>
-                      <a
-                        href={isSoon ? '#' : item.href}
-                        onClick={(e) => {
-                          if (isSoon) {
-                            e.preventDefault();
-                            alert('Coming in Wave 6B.');
-                          } else setDrawerOpen(false);
-                        }}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${active ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-surface'} ${isSoon ? 'opacity-50' : ''}`}>
-                        <svg
-                          className='h-4 w-4'
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          aria-hidden='true'>
-                          <path d={item.icon} />
-                        </svg>
-                        {item.label}
-                      </a>
-                    </li>
-                  );
-                })}
+                {items.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={item.href}
+                      onClick={() => setDrawerOpen(false)}
+                      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium ${item.id === activePage ? 'bg-primary/10 text-primary' : 'text-slate-700 hover:bg-surface'}`}>
+                      <svg
+                        className='h-4 w-4'
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        aria-hidden='true'>
+                        <path d={item.icon} />
+                      </svg>
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </nav>
             <div className='border-t border-border p-3'>
@@ -316,7 +297,6 @@ export default function AdminShell({ activePage, children }) {
         </>
       )}
 
-      {/* Main */}
       <main className='lg:pl-60'>
         <div className='mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8 lg:px-8'>
           {children}

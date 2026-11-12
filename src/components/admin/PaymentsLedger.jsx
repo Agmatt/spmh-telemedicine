@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchAdminPayments } from '../../lib/admin';
+import { supabase } from '../../lib/supabase';
+import { fetchAdminPayments, deletePayment } from '../../lib/admin';
 
 function fmt(iso) {
   return new Date(iso).toLocaleString('en-KE', {
@@ -12,6 +13,7 @@ function fmt(iso) {
     hour12: true,
   });
 }
+
 function badge(status) {
   const map = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -31,6 +33,13 @@ export default function PaymentsLedger() {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setRole(data.session?.user?.app_metadata?.role ?? 'patient');
+    });
+  }, []);
 
   async function load() {
     setLoading(true);
@@ -42,9 +51,20 @@ export default function PaymentsLedger() {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     load();
   }, []);
+
+  async function handleDelete(id) {
+    if (!confirm('Permanently delete this payment record?')) return;
+    try {
+      await deletePayment(id);
+      load();
+    } catch (e) {
+      alert(e.message);
+    }
+  }
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -69,6 +89,8 @@ export default function PaymentsLedger() {
       confirmedKes: confirmed.reduce((s, r) => s + r.amount_kes, 0),
     };
   }, [rows]);
+
+  const canDelete = role === 'admin' || role === 'supervisor';
 
   return (
     <div>
@@ -167,13 +189,16 @@ export default function PaymentsLedger() {
                 <th className='px-4 py-3 font-bold'>Status</th>
                 <th className='px-4 py-3 font-bold'>Reference</th>
                 <th className='px-4 py-3 font-bold'>Created</th>
+                {canDelete && (
+                  <th className='px-4 py-3 font-bold text-right'>Action</th>
+                )}
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={canDelete ? 7 : 6}
                     className='px-4 py-12 text-center text-sm text-muted'>
                     No payments match.
                   </td>
@@ -209,6 +234,15 @@ export default function PaymentsLedger() {
                   <td className='px-4 py-3 text-xs text-muted'>
                     {fmt(r.created_at)}
                   </td>
+                  {canDelete && (
+                    <td className='px-4 py-3 text-right'>
+                      <button
+                        onClick={() => handleDelete(r.id)}
+                        className='text-xs font-semibold text-accent hover:underline'>
+                        Delete
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

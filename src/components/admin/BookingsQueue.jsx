@@ -5,6 +5,21 @@ import {
   cancelAppointment,
 } from '../../lib/admin';
 
+  async function handleDelete() {
+    if (!confirm('Permanently delete this appointment and its payment record?'))
+      return;
+    setBusy(true);
+    setErr(null);
+    try {
+      await deleteAppointment(appointment.id);
+      onChanged();
+      onClose();
+    } catch (e) {
+      setErr(e.message);
+      setBusy(false);
+    }
+  }
+
 function fmt(iso) {
   return new Date(iso).toLocaleString('en-KE', {
     timeZone: 'Africa/Nairobi',
@@ -455,9 +470,10 @@ function Drawer({ appointment, onClose, onChanged }) {
                 )}
                 {canCancel && (
                   <button
-                    onClick={() => setMode('cancel')}
-                    className='flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-accent/40 text-sm font-semibold text-accent hover:bg-accent/5'>
-                    Cancel appointment
+                    onClick={handleDelete}
+                    disabled={busy}
+                    className='mt-2 h-11 w-full rounded-lg border border-border text-sm font-semibold text-slate-700 hover:bg-surface'>
+                    Delete permanently
                   </button>
                 )}
               </div>
