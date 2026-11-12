@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
-import { fetchStaff, setUserRole, createUserAccount } from '../../lib/admin';
-
+import {
+  fetchStaff,
+  setUserRole,
+  createUserAccount,
+  deleteUserAccount,
+} from '../../lib/admin';
 const ROLES = ['patient', 'receptionist', 'doctor', 'admin', 'supervisor'];
 
-  async function handleDelete(userId, email) {
-    if (
-      !confirm(
-        `CRITICAL: Permanently delete user ${email}? This cannot be undone.`,
+    async function handleDelete(userId, email) {
+      if (
+        !confirm(
+          `CRITICAL: Permanently delete user ${email}? This cannot be undone.`,
+        )
       )
-    )
-      return;
-    try {
-      await deleteUserAccount(userId);
-      load();
-    } catch (e) {
-      alert(e.message);
+        return;
+      try {
+        await deleteUserAccount(userId);
+        load(); // Refresh the list
+      } catch (e) {
+        alert('Delete failed: ' + e.message);
+      }
     }
-  }
 
 
 function badge(role) {

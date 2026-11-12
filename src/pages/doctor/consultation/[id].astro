@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import AdminLayout from '../../../layout/AdminLayout.astro';
+import ConsultationView from '../../../components/doctor/ConsultationView.jsx';
+import '../../../styles/global.css';
+const { id } = Astro.params;
+---
+<AdminLayout title="Consultation Workspace">
+  <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 lg:px-8">
+    {id ? <ConsultationView client:load appointmentId={id} /> : <p>Invalid appointment.</p>}
+  </div>
+</AdminLayout>

@@ -93,9 +93,10 @@ export default function DoctorDashboard() {
             </div>
           )}
           {upcoming.map((a) => (
-            <div
+            <a
               key={a.id}
-              className='rounded-xl border border-border bg-white p-5'>
+              href={`/doctor/consultation/${a.id}`}
+              className='block rounded-xl border border-border bg-white p-5 hover:border-primary/50 hover:shadow-md transition-all'>
               <div className='flex flex-wrap items-center justify-between gap-3'>
                 <div>
                   <p className='font-semibold text-slate-900'>
@@ -114,7 +115,7 @@ export default function DoctorDashboard() {
                   </p>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>

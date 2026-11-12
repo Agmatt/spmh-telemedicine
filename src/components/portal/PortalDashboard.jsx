@@ -104,13 +104,27 @@ if ((data.session.user.app_metadata?.role ?? 'patient') !== 'patient') {
           {upcoming.map((a) => (
             <a
               key={a.id}
-              href={`/portal/appointment-confirmed?id=${a.id}`}
-              className='block rounded-xl border border-border bg-white p-5 hover:border-primary/40'>
-              <p className='font-semibold text-slate-900'>{a.specialty_name}</p>
-              <p className='text-xs text-muted'>
-                {formatNairobiDate(a.scheduled_at)} ·{' '}
-                {formatNairobiTime(a.scheduled_at)} EAT
-              </p>
+              href={`/portal/consultation/${a.id}`}
+              className='block rounded-xl border border-border bg-white p-5 transition-all hover:border-primary/40 hover:shadow-sm'>
+              <div className='flex flex-wrap items-center justify-between gap-3'>
+                <div>
+                  <p className='font-semibold text-slate-900'>
+                    {a.specialty_name}
+                  </p>
+                  <p className='mt-1 text-xs text-muted'>
+                    {formatNairobiDate(a.scheduled_at)} ·{' '}
+                    {formatNairobiTime(a.scheduled_at)} EAT
+                  </p>
+                </div>
+                <span
+                  className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${a.status === 'in_progress' ? 'bg-accent text-white animate-pulse' : a.payment_status === 'manual_confirmed' || a.payment_status === 'mpesa_confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                  {a.status === 'in_progress'
+                    ? 'Join Call Now'
+                    : a.payment_status === 'pending'
+                      ? 'Payment pending'
+                      : 'Confirmed'}
+                </span>
+              </div>
             </a>
           ))}
         </div>

@@ -1,0 +1,12 @@
+---
+export const prerender = false;
+import LandingLayout from '../../../layout/LandingLayout.astro';
+import PatientCallView from '../../../components/portal/PatientCallView.jsx';
+import '../../../styles/global.css';
+const { id } = Astro.params;
+---
+<LandingLayout title="Video Consultation — SPMH Telemedicine" noindex={true}>
+  <section class="bg-slate-900 min-h-[90vh]">
+    {id ? <PatientCallView client:load appointmentId={id} /> : <p class="text-white p-8">Invalid link.</p>}
+  </section>
+</LandingLayout>
