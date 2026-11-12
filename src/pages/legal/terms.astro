@@ -1,0 +1,195 @@
+---
+import LegalLayout from '../../layout/LegalLayout.astro';
+import '../../styles/global.css';
+
+const lastUpdated = '12 November 2026';
+const version = '1.0';
+const draft = true;
+
+const sections = [
+  { id: 'what-this-is', label: '1. What this service is' },
+  { id: 'emergencies', label: '2. Emergencies (important)' },
+  { id: 'eligibility', label: '3. Eligibility' },
+  { id: 'account', label: '4. Your account' },
+  { id: 'consent', label: '5. Clinical consent' },
+  { id: 'prescriptions', label: '6. Prescriptions and referrals' },
+  { id: 'payment', label: '7. Payment and refunds' },
+  { id: 'cancellations', label: '8. Cancellations' },
+  { id: 'privacy', label: '9. Data and privacy' },
+  { id: 'our-obligations', label: '10. Our obligations to you' },
+  { id: 'liability', label: '11. Limits of liability' },
+  { id: 'ip', label: '12. Intellectual property' },
+  { id: 'governing-law', label: '13. Governing law' },
+  { id: 'changes', label: '14. Changes to these terms' },
+];
+---
+<LegalLayout
+  title="Terms of Telemedicine"
+  description="The legal terms governing your use of SPMH Telemedicine. Read carefully — these terms explain the nature of the service, its limits, and your rights."
+  lastUpdated={lastUpdated}
+  version={version}
+  draft={draft}
+  sections={sections}
+>
+  <p class="text-base leading-relaxed text-slate-700">
+    These Terms of Telemedicine ("Terms") govern your use of the SPMH Telemedicine portal at <strong>telemedicine.spmh.co.ke</strong>, operated by St. Paul's Mission Hospital ("SPMH"). By registering and using the service, you agree to these Terms. Please read them carefully.
+  </p>
+
+  <div class="callout">
+    <p><strong>For emergencies, do not use this portal.</strong> Call the SPMH Emergency Line at <a href="tel:+254111817447">+254 111 817447</a> immediately, or go to the nearest emergency facility. See section 2.</p>
+  </div>
+
+  <h2 id="what-this-is">1. What this service is</h2>
+  <p>
+    SPMH Telemedicine provides <strong>non-emergency clinical consultations</strong> delivered remotely by licensed SPMH clinicians, via secure video, chat, and file sharing. The service is intended for:
+  </p>
+  <ul>
+    <li>Consultations about symptoms, conditions, or health questions</li>
+    <li>Follow-up care for chronic conditions</li>
+    <li>Medication reviews and prescription refills (where clinically appropriate)</li>
+    <li>Second opinions on conditions already diagnosed</li>
+    <li>Antenatal and postnatal check-ins</li>
+    <li>Nutrition and dietetic consultations</li>
+  </ul>
+  <p>
+    Telemedicine is <strong>not</strong> a substitute for physical examination where one is medically required, and it is not appropriate for every condition. Your doctor will tell you during the consultation if an in-person visit is necessary, and can book one for you.
+  </p>
+
+  <h2 id="emergencies">2. Emergencies (important)</h2>
+  <p>
+    <strong>Do not use this portal for a medical emergency.</strong> Telemedicine cannot diagnose or treat life-threatening conditions. If you are experiencing any of the following, call the SPMH Emergency Line on <a href="tel:+254111817447">+254 111 817447</a> immediately, or go to the nearest emergency facility:
+  </p>
+  <ul>
+    <li>Chest pain or pressure</li>
+    <li>Difficulty breathing or severe shortness of breath</li>
+    <li>Severe bleeding that will not stop</li>
+    <li>Sudden weakness, numbness, or difficulty speaking</li>
+    <li>Severe abdominal pain</li>
+    <li>Head injury with loss of consciousness or confusion</li>
+    <li>Any thought of self-harm or harm to others</li>
+  </ul>
+  <p>
+    If you are not sure whether your situation is an emergency, <strong>treat it as one</strong> and call the emergency line. Do not wait for a telemedicine appointment.
+  </p>
+
+  <h2 id="eligibility">3. Eligibility</h2>
+  <ul>
+    <li>You must be <strong>18 years or older</strong> to register for an account.</li>
+    <li>Patients under 18 must be registered by a parent or legal guardian, who must be present for every consultation.</li>
+    <li>You must have lawful access to the device and internet connection used for the consultation.</li>
+    <li>You must provide accurate identity and contact information. Accounts with false information may be suspended.</li>
+  </ul>
+
+  <h2 id="account">4. Your account</h2>
+  <ul>
+    <li>You are responsible for keeping your password confidential and for all activity on your account.</li>
+    <li>You must not share your account with anyone else, including family members. Each patient needs their own account (except for minors under 18, registered under a guardian's account).</li>
+    <li>Notify us immediately if you suspect unauthorised access to your account.</li>
+    <li>We may suspend or terminate accounts that violate these Terms, engage in fraud, or pose a safety risk.</li>
+  </ul>
+
+  <h2 id="consent">5. Clinical consent</h2>
+  <p>By booking a consultation, you consent to:</p>
+  <ul>
+    <li>Receiving clinical care by telemedicine</li>
+    <li>Your treating doctor making clinical notes about the consultation</li>
+    <li>Sharing of relevant clinical information with other SPMH clinicians involved in your care</li>
+    <li>Storage of your data as described in our <a href="/legal/privacy">Privacy Policy</a></li>
+  </ul>
+  <p>
+    You may withdraw consent at any time by contacting <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a>. Withdrawal ends future consultations but does not delete records we are required to retain by law.
+  </p>
+  <p>
+    Telemedicine has limits that in-person care does not: your doctor cannot physically examine you, cannot palpate, cannot perform certain tests, and relies on what you describe and show. You agree to describe your symptoms honestly and completely, and to disclose all medications you are taking.
+  </p>
+
+  <h2 id="prescriptions">6. Prescriptions and referrals</h2>
+  <p>
+    Where clinically appropriate, your doctor may issue an electronic prescription. The prescription appears in your patient portal as a downloadable PDF. SPMH does not deliver medications. You collect from any licensed pharmacy by presenting the PDF.
+  </p>
+  <p>
+    If your doctor determines that an in-person examination, procedure, or specialist consultation is required, they will refer you. Referral to SPMH's outpatient clinic is booked directly at no additional booking fee; the standard outpatient consultation fee applies at the desk.
+  </p>
+
+  <h2 id="payment">7. Payment and refunds</h2>
+  <p>Consultation fees are displayed before you book and are payable in advance of the consultation.</p>
+  <h3>Payment methods</h3>
+  <ul>
+    <li><strong>M-Pesa</strong> — in-portal STK push (being finalised with Safaricom; will be enabled when live)</li>
+    <li><strong>SPMH Reception</strong> — during the pilot, walk-in payment at the hospital reception desk before your consultation</li>
+  </ul>
+  <h3>Refund policy</h3>
+  <ul>
+    <li><strong>100% refund</strong> if the doctor fails to join your consultation (contact Patient Support within 24 hours)</li>
+    <li><strong>100% refund</strong> if you cancel 24+ hours before the appointment</li>
+    <li><strong>50% refund</strong> if you cancel 2–24 hours before the appointment</li>
+    <li><strong>No refund</strong> for cancellations within 2 hours of the appointment or for no-shows</li>
+    <li>Refunds are processed to the original payment method within 5 business days</li>
+  </ul>
+  <h3>Insurance</h3>
+  <p>
+    Direct payment is required. SPMH will provide a receipt for you to submit to your insurer. SHA/NHIF direct billing for telemedicine is not yet available; guidance is pending national rollout.
+  </p>
+
+  <h2 id="cancellations">8. Cancellations</h2>
+  <p>
+    You can cancel or reschedule any appointment from your patient portal, with no need to call. Cancellation fee rules are in section 7.
+  </p>
+  <p>
+    If your doctor needs to cancel, SPMH will offer you an alternative appointment with the same doctor or another SPMH doctor, or a full refund if you prefer.
+  </p>
+
+  <h2 id="privacy">9. Data and privacy</h2>
+  <p>
+    Our <a href="/legal/privacy">Privacy Policy</a> and <a href="/legal/dpa">Data Protection Notice</a> explain what data we collect and how we handle it. They form part of these Terms.
+  </p>
+
+  <h2 id="our-obligations">10. Our obligations to you</h2>
+  <p>SPMH commits to:</p>
+  <ul>
+    <li>Providing care that meets the standard of a reasonably competent Kenyan medical practitioner</li>
+    <li>Assigning you a licensed SPMH clinician for every consultation</li>
+    <li>Keeping your data secure and confidential</li>
+    <li>Providing clear information about fees, cancellation policies, and refunds</li>
+    <li>Responding to complaints within 5 business days</li>
+  </ul>
+
+  <h2 id="liability">11. Limits of liability</h2>
+  <p>
+    SPMH provides clinical care to the standard described in section 10. However, we are not liable for outcomes caused by:
+  </p>
+  <ul>
+    <li>Inaccurate or incomplete information you provide</li>
+    <li>Network failures, connectivity problems, or device issues outside our control</li>
+    <li>Your failure to follow clinical advice</li>
+    <li>Conditions outside the clinical scope appropriate for telemedicine, where you were advised to seek in-person care</li>
+    <li>Actions of third-party service providers (payment processors, telecoms, video infrastructure) acting outside our reasonable control</li>
+  </ul>
+  <p>
+    Nothing in these Terms limits liability for death or personal injury caused by our negligence, fraud, or any other liability that cannot be limited under Kenyan law.
+  </p>
+
+  <h2 id="ip">12. Intellectual property</h2>
+  <p>
+    The content, design, and code of this portal are owned by SPMH or licensed to SPMH. You may not copy, redistribute, or use them for commercial purposes without written permission. Your own clinical data remains yours; you grant SPMH a licence to use it for the purpose of delivering care and meeting legal obligations.
+  </p>
+
+  <h2 id="governing-law">13. Governing law</h2>
+  <p>
+    These Terms are governed by the laws of Kenya. Any dispute arising out of or in connection with these Terms will be subject to the exclusive jurisdiction of the courts of Homa Bay, Kenya — after a good-faith attempt to resolve the dispute directly with SPMH's Patient Support Desk.
+  </p>
+
+  <h2 id="changes">14. Changes to these terms</h2>
+  <p>
+    We may update these Terms from time to time. When we do, we will:
+  </p>
+  <ul>
+    <li>Update the "Last updated" date at the top of this page</li>
+    <li>Publish the new version number</li>
+    <li>Notify registered users by email at least 14 days before material changes take effect</li>
+    <li>Require re-acceptance before your next consultation</li>
+  </ul>
+  <p>
+    Continuing to use the service after changes take effect constitutes acceptance of the new Terms.
+  </p>
+</LegalLayout>

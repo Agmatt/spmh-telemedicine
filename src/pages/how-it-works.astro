@@ -1,0 +1,386 @@
+---
+import LandingLayout from '../layout/LandingLayout.astro';
+import { site } from '../data/site';
+
+const steps = [
+  {
+    n: '01',
+    title: 'Create your account',
+    time: 'About 2 minutes',
+    icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>',
+    summary: 'Register with your email, phone, and basic health context. Accept the privacy terms and you are ready.',
+    details: [
+      'Register with your email address and a password of at least 10 characters.',
+      'Add your phone number (Safaricom for M-Pesa, or any number for SMS reminders).',
+      'Tell us the reason for your visit — optional, but it helps us route you to the right doctor.',
+      'Accept the Privacy Policy, Terms of Telemedicine, and Data Protection Notice — one tick-box, three records kept on file.',
+      'Confirm your email address via the link we send.',
+    ],
+    notes: [
+      'Your data is encrypted at rest and in transit.',
+      'One account for all future consultations — no re-registration each time.',
+      'Your consent is timestamped and version-locked under DPA 2019.',
+    ],
+  },
+  {
+    n: '02',
+    title: 'Choose a specialist',
+    time: '5–10 minutes to browse',
+    icon: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    summary: 'Browse our nine specialties. Read what each doctor treats, see the fee, and confirm the consultation length.',
+    details: [
+      'Open the Specialties page — each specialty has the fee, duration, conditions treated, and what to prepare.',
+      'Filter by condition (e.g. "diabetes", "child", "eye") using the search bar.',
+      'Read what the consultation includes and what it does not.',
+      'If you are not sure which specialty fits, choose General Medicine. The doctor will refer you onward if needed.',
+    ],
+    notes: [
+      'Fees range from KES 500 (General Medicine) to KES 1,200 (Mental Health & Counselling).',
+      'Consultations run 20–45 minutes depending on the specialty.',
+      'Availability is Mon–Sat, 8 AM–5 PM.',
+    ],
+  },
+  {
+    n: '03',
+    title: 'Book and pay',
+    time: '2–3 minutes',
+    icon: '<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+    summary: 'Pick a time slot, confirm the fee, and receive an SMS reminder before the consultation.',
+    details: [
+      'Choose an available time slot from your doctor\'s calendar.',
+      'Confirm the consultation fee — displayed clearly before you commit.',
+      'During the pilot, payment can be confirmed at the SPMH reception desk. In-portal M-Pesa is being finalised with Safaricom.',
+      'You receive an SMS and email confirmation with the consultation link.',
+      'A reminder SMS goes out 24 hours before your appointment.',
+    ],
+    notes: [
+      'Cancellations 24+ hours before your appointment are free.',
+      '100% refund if the doctor fails to join.',
+      'Reschedule from the portal with one click — no phone calls required.',
+    ],
+  },
+  {
+    n: '04',
+    title: 'Meet by video',
+    time: '20–45 minutes',
+    icon: '<path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/>',
+    summary: 'Join the secure room from any device with a camera. Your doctor is waiting.',
+    details: [
+      'Five minutes before your time slot, click "Join consultation" from your portal.',
+      'You land in a secure video room. Only you and your assigned doctor are present.',
+      'Your doctor has already reviewed your history and the reason for your visit.',
+      'Share symptoms, ask questions, and receive a clear plan of action.',
+      'Your doctor issues any prescription directly to your portal, or refers you to the SPMH outpatient clinic if in-person examination is needed.',
+    ],
+    notes: [
+      'No recording — your consultation is private.',
+      'Consultations are not recorded, shared, or used for training without written consent.',
+      'If your connection drops, rejoin the same room using the link in your SMS.',
+    ],
+  },
+];
+
+const toPrepare = [
+  { title: 'Medical information', items: ['List of current medications (with doses)', 'Any drug or food allergies', 'Recent lab results or medical reports', 'Brief medical history (surgeries, hospital stays)'] },
+  { title: 'Symptoms & concerns', items: ['When the symptoms started', 'What makes them better or worse', 'Any other symptoms', 'How it affects your daily life'] },
+  { title: 'Technical setup', items: ['Stable internet (4G works fine, 2 Mbps minimum)', 'A quiet, private room', 'Charged device and camera access', 'Good lighting on your face'] },
+];
+
+const security = [
+  { title: 'Data encryption', body: 'TLS 1.3 for all traffic. AES-256 at rest. Your consultation is encrypted end-to-end.' },
+  { title: 'Access control', body: 'Only your treating doctor and authorised SPMH staff can see your record. Every access is logged.' },
+  { title: 'Consent, recorded', body: 'When you register, we save a timestamped record of the version of privacy notice you accepted. Every time.' },
+  { title: 'Kenya DPA 2019', body: 'Clinical records are held for 7 years per medical-record standards. Audit logs for 7 years. Consent records for 7 years.' },
+];
+
+const after = [
+  { n: '01', title: 'Receive your prescription', body: 'Where clinically appropriate, your doctor issues an e-prescription directly to your portal within 24 hours. Download as PDF, take to any licensed pharmacy.' },
+  { n: '02', title: 'Review your clinical note', body: 'Your doctor signs the note from the consultation. You can view it, download it, or share it with any other provider you choose.' },
+  { n: '03', title: 'Book any follow-up', body: 'For chronic conditions, your doctor can pre-schedule your next consultation. Pay only when you book.' },
+  { n: '04', title: 'Reach us if needed', body: 'Any questions after your consultation — call or message the Patient Support Desk. We are here Mon–Sat, 8 AM–5 PM.' },
+];
+
+const faqs = [
+  { q: 'Do I need a smartphone?', a: 'Any device with a camera, microphone and internet connection works — phone, tablet, or computer. If you only have a basic phone, we can arrange for you to join from an SPMH clinic computer.' },
+  { q: 'What if the doctor needs to examine me in person?', a: 'Your doctor will tell you during the consultation and can book you directly into the SPMH outpatient clinic at no extra booking fee.' },
+  { q: 'Is the consultation recorded?', a: 'No. Consultations are not recorded. Your doctor writes a clinical note after the call, which you can view and download.' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://telemedicine.spmh.co.ke' },
+        { '@type': 'ListItem', position: 2, name: 'How it works', item: 'https://telemedicine.spmh.co.ke/how-it-works' },
+      ],
+    },
+    {
+      '@type': 'MedicalWebPage',
+      name: 'How Telemedicine Works — SPMH Telemedicine',
+      url: 'https://telemedicine.spmh.co.ke/how-it-works',
+      description: 'Step-by-step walkthrough of an SPMH telemedicine consultation, from registration to prescription.',
+    },
+  ],
+};
+---
+<LandingLayout
+  title="How it works — SPMH Telemedicine"
+  description="From sign-up to prescription in four steps. See exactly what to expect at each stage of an SPMH telemedicine consultation."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+  <!-- Hero -->
+  <section class="border-b border-border bg-white">
+    <div class="mx-auto max-w-7xl px-4 pt-10 pb-12 md:px-6 md:pt-14 md:pb-16 lg:px-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-xs text-muted">
+          <li><a href="/" class="hover:text-primary">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-semibold text-slate-700">How it works</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-6 font-display-bold text-4xl text-secondary md:text-5xl">
+        From sign-up to prescription, in four steps.
+      </h1>
+      <div class="mt-4 h-px w-12 bg-gold" aria-hidden="true"></div>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
+        Every stage is designed to be quick, secure, and clear. No surprises. No hidden fees. No queues.
+      </p>
+    </div>
+  </section>
+
+  <!-- 4-step accordion -->
+  <section class="bg-surface">
+    <div class="mx-auto max-w-4xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="space-y-4">
+        {steps.map((s, i) => (
+          <details class="group rounded-2xl border border-border bg-white p-6 transition-colors hover:border-primary/30 md:p-8" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-start gap-4">
+              <span class="grid h-12 w-12 flex-shrink-0 place-items-center rounded-xl bg-primary text-white shadow-md">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+              </span>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p class="font-display-bold text-xs uppercase tracking-[0.18em] text-gold">Step {s.n}</p>
+                    <h2 class="mt-1 font-display-bold text-xl text-secondary md:text-2xl">{s.title}</h2>
+                  </div>
+                  <span class="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-primary">
+                    {s.time}
+                  </span>
+                </div>
+                <p class="mt-3 text-sm leading-relaxed text-slate-600">{s.summary}</p>
+              </div>
+              <svg class="mt-2 h-5 w-5 flex-shrink-0 text-muted transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+
+            <div class="mt-6 grid gap-6 border-t border-border pt-6 md:grid-cols-[2fr_1fr]">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-secondary">What happens</p>
+                <ol class="mt-3 space-y-3">
+                  {s.details.map((d, idx) => (
+                    <li class="flex gap-3 text-sm leading-relaxed text-slate-700">
+                      <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">{idx + 1}</span>
+                      <span>{d}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div class="rounded-xl bg-surface/70 p-4">
+                <p class="text-xs font-bold uppercase tracking-wider text-primary">Good to know</p>
+                <ul class="mt-3 space-y-2">
+                  {s.notes.map((n) => (
+                    <li class="flex items-start gap-2 text-xs leading-relaxed text-slate-700">
+                      <svg class="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                      {n}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- What to prepare -->
+  <section class="bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Before your appointment</p>
+        <div class="mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">What to prepare.</h2>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">
+          The more detailed information you bring, the more your doctor can help. None of this is mandatory — but all of it improves the consultation.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-3">
+        {toPrepare.map((p) => (
+          <div class="rounded-2xl border border-border bg-white p-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-primary">{p.title}</p>
+            <ul class="mt-4 space-y-3">
+              {p.items.map((it) => (
+                <li class="flex items-start gap-2 text-sm leading-relaxed text-slate-700">
+                  <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  {it}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing transparency -->
+  <section class="border-t border-border bg-surface">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Pricing</p>
+          <div class="mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+          <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Fees shown before you book.</h2>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            No hidden charges. No surprise invoices. Each specialty has one clear fee, listed on the specialty page. You pay before the consultation — by M-Pesa (coming soon) or at the SPMH reception desk during the pilot.
+          </p>
+          <p class="mt-3 text-sm leading-relaxed text-slate-600">
+            If your doctor determines that you need an in-person examination, they book you directly into the SPMH outpatient clinic at no additional booking fee. You pay the standard outpatient consultation at the desk.
+          </p>
+          <a href="/specialties" class="mt-6 inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark">
+            See all fees
+            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="rounded-2xl border border-border bg-white p-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-muted">From</p>
+            <p class="mt-1 font-display-bold text-3xl text-primary">KES 500</p>
+            <p class="mt-1 text-xs text-muted">General Medicine</p>
+          </div>
+          <div class="rounded-2xl border border-border bg-white p-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-muted">Up to</p>
+            <p class="mt-1 font-display-bold text-3xl text-secondary">KES 1,200</p>
+            <p class="mt-1 text-xs text-muted">Mental Health</p>
+          </div>
+          <div class="col-span-2 rounded-2xl border border-border bg-white p-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-muted">Payment methods</p>
+            <ul class="mt-3 space-y-2 text-sm text-slate-700">
+              <li class="flex items-center justify-between">
+                <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-primary"></span>Reception (pilot)</span>
+                <span class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-700">Active</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-muted"></span>M-Pesa STK push</span>
+                <span class="rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-yellow-700">Coming</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section class="bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Privacy &amp; security</p>
+        <div class="mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Your health data is protected.</h2>
+        <p class="mt-4 text-base leading-relaxed text-slate-600">
+          We built this system to the standards a hospital should expect. Here is exactly how your information is handled.
+        </p>
+      </div>
+
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        {security.map((item) => (
+          <div class="flex gap-4 rounded-2xl border border-border bg-white p-6">
+            <span class="grid h-10 w-10 flex-shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <div>
+              <p class="font-semibold text-slate-900">{item.title}</p>
+              <p class="mt-1 text-sm leading-relaxed text-slate-600">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- After the consultation -->
+  <section class="border-t border-border bg-surface">
+    <div class="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="max-w-2xl">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">After your consultation</p>
+        <div class="mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">What happens next.</h2>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {after.map((a) => (
+          <div class="rounded-2xl border border-border bg-white p-6">
+            <p class="font-display-bold text-3xl text-primary/60">{a.n}</p>
+            <h3 class="mt-3 font-display-bold text-lg text-secondary">{a.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">{a.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ preview -->
+  <section class="bg-white">
+    <div class="mx-auto max-w-3xl px-4 py-16 md:px-6 md:py-20 lg:px-8">
+      <div class="text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Quick answers</p>
+        <div class="mx-auto mt-3 h-px w-12 bg-gold" aria-hidden="true"></div>
+        <h2 class="mt-6 font-display-bold text-3xl text-secondary md:text-4xl">Before you ask.</h2>
+      </div>
+
+      <div class="mt-10 space-y-3">
+        {faqs.map((f) => (
+          <details class="group rounded-xl border border-border bg-white p-5 transition-colors hover:border-primary/30">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-sm font-semibold text-slate-900">
+              {f.q}
+              <svg class="h-4 w-4 flex-shrink-0 text-muted transition-transform group-open:rotate-180" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">{f.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="mt-8 text-center">
+        <a href="/faq" class="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          See all questions
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative overflow-hidden bg-ink">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,81,0.14),transparent_60%)]" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-3xl px-4 py-20 text-center md:px-6 md:py-24">
+      <h2 class="font-display text-3xl text-white md:text-4xl">Ready to see a doctor?</h2>
+      <p class="mx-auto mt-4 max-w-xl text-base text-white/70">
+        Register in under two minutes. Book a consultation with an SPMH specialist from wherever you are.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/auth/register" class="inline-flex h-12 items-center gap-2 rounded-lg bg-accent px-6 font-semibold text-white transition-opacity hover:opacity-90">
+          Create your account
+        </a>
+        <a href="/specialties" class="inline-flex h-12 items-center gap-2 rounded-lg border border-white/25 px-6 font-semibold text-white transition-colors hover:bg-white/10">
+          Browse specialties
+        </a>
+      </div>
+    </div>
+  </section>
+</LandingLayout>

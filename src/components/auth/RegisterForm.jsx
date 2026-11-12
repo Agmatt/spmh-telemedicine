@@ -4,6 +4,7 @@ import Field from '../ui/Field.jsx';
 
 const SPECIALTIES = [
   ['general-medicine', 'General Medicine'],
+  ['nutrition', 'Nutrition & Dietetics'],
   ['general-surgery', 'General Surgery'],
   ['obstetrics-gynaecology', 'Obstetrics & Gynaecology'],
   ['paediatrics', 'Paediatrics'],

@@ -1,0 +1,245 @@
+---
+import LegalLayout from '../../layout/LegalLayout.astro';
+import '../../styles/global.css';
+
+const lastUpdated = '12 November 2026';
+const version = '1.0';
+const draft = true; // ← remove (or set to false) once reviewed by Kenyan legal counsel
+
+const sections = [
+  { id: 'who-we-are', label: '1. Who we are' },
+  { id: 'what-we-collect', label: '2. What we collect' },
+  { id: 'why-we-collect', label: '3. Why we collect it' },
+  { id: 'lawful-basis', label: '4. Our lawful basis' },
+  { id: 'who-we-share', label: '5. Who we share it with' },
+  { id: 'retention', label: '6. How long we keep it' },
+  { id: 'security', label: '7. How we protect it' },
+  { id: 'cross-border', label: '8. Cross-border storage' },
+  { id: 'your-rights', label: '9. Your rights' },
+  { id: 'children', label: "10. Children's data" },
+  { id: 'consent', label: '11. Consent and versioning' },
+  { id: 'changes', label: '12. Changes to this policy' },
+  { id: 'contact', label: '13. How to contact us' },
+  { id: 'complaints', label: '14. How to complain' },
+];
+---
+<LegalLayout
+  title="Privacy Policy"
+  description="How St. Paul's Mission Hospital collects, uses, and protects your personal and health data on the SPMH Telemedicine portal."
+  lastUpdated={lastUpdated}
+  version={version}
+  draft={draft}
+  sections={sections}
+>
+  <p class="text-base leading-relaxed text-slate-700">
+    This policy explains how St. Paul's Mission Hospital ("SPMH", "we", "us") collects and handles your personal information when you use the SPMH Telemedicine portal at <strong>telemedicine.spmh.co.ke</strong>. It is written to comply with the <strong>Kenya Data Protection Act 2019 (DPA 2019)</strong> and the <strong>Kenya Health Act 2017</strong>.
+  </p>
+
+  <div class="callout">
+    <p><strong>The short version:</strong> We collect what we need to deliver telemedicine care. We keep clinical records for 7 years as Kenyan medical law requires. We never sell your data. We share it only with the SPMH clinicians involved in your care and with the regulated service providers named in section 5. You can see, correct, or request deletion of your data by writing to <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a>.</p>
+  </div>
+
+  <h2 id="who-we-are">1. Who we are</h2>
+  <p>
+    <strong>Data controller:</strong> St. Paul's Mission Hospital, Homa Bay, Kenya — a faith-based Level IV hospital owned by the Catholic Diocese of Homa Bay, operating under the oversight of the Kenya Ministry of Health, Homa Bay County Department of Health, and the Catholic Health Commission of Kenya.
+  </p>
+  <p><strong>Registered address:</strong> P.O. Box 426, Homa Bay, Kenya</p>
+  <p><strong>Portal operator:</strong> SPMH, on infrastructure provided by Supabase Inc. (database), Vercel Inc. (hosting), and Daily.co (video). All operate under contractual data-processing agreements with SPMH.</p>
+  <p><strong>Interim Data Protection Officer:</strong> <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a></p>
+
+  <h2 id="what-we-collect">2. What we collect</h2>
+  <p>We collect the following categories of personal data:</p>
+
+  <h3>Identity and contact data</h3>
+  <ul>
+    <li>Full name</li>
+    <li>Email address</li>
+    <li>Phone number (Safaricom number for M-Pesa, or any number for SMS reminders)</li>
+    <li>Date of birth and gender</li>
+    <li>Physical address and county (optional)</li>
+  </ul>
+
+  <h3>Clinical data</h3>
+  <ul>
+    <li>Symptoms and reason for visit</li>
+    <li>Medical history you disclose during a consultation</li>
+    <li>Clinical notes written by your treating doctor</li>
+    <li>Prescriptions issued to you</li>
+    <li>Uploaded documents you choose to share (lab results, discharge summaries)</li>
+  </ul>
+
+  <h3>Consultation metadata</h3>
+  <ul>
+    <li>Timestamps when a consultation begins and ends</li>
+    <li>Duration of your video session</li>
+    <li>System events (e.g. "user joined", "user left") written to an audit log</li>
+  </ul>
+  <p><strong>We do not record video consultations.</strong> The video stream is not stored on any server. Only the session metadata above is logged.</p>
+
+  <h3>Payment data</h3>
+  <ul>
+    <li>M-Pesa reference numbers (we never see your PIN or mobile-money balance)</li>
+    <li>Amount paid, date and time, and which appointment the payment covers</li>
+  </ul>
+
+  <h3>Technical data</h3>
+  <ul>
+    <li>IP address, browser type, and device identifier (for security and audit)</li>
+    <li>Session cookies needed for you to stay signed in</li>
+  </ul>
+
+  <h2 id="why-we-collect">3. Why we collect it</h2>
+  <p>We collect each category for one of the following reasons:</p>
+  <table>
+    <thead>
+      <tr><th>Purpose</th><th>Data used</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>To provide telemedicine consultations</td><td>Identity, contact, clinical, consultation metadata</td></tr>
+      <tr><td>To maintain your medical record as required by Kenyan law</td><td>Identity, clinical, prescriptions</td></tr>
+      <tr><td>To verify your identity and prevent fraud</td><td>Identity, contact, technical</td></tr>
+      <tr><td>To process your consultation fee</td><td>Identity, payment</td></tr>
+      <tr><td>To contact you about your appointment</td><td>Contact</td></tr>
+      <tr><td>To meet our legal and regulatory obligations</td><td>All categories, where required</td></tr>
+      <tr><td>To improve the service (aggregated, de-identified statistics only)</td><td>Anonymised technical and consultation metadata</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="lawful-basis">4. Our lawful basis</h2>
+  <p>Under the DPA 2019, we rely on the following lawful bases:</p>
+  <ul>
+    <li><strong>Explicit consent</strong> — for clinical data, for telemedicine participation, and for any specific purpose we ask you to consent to. Consent is recorded as described in section 11.</li>
+    <li><strong>Contract</strong> — to deliver the consultation you book and pay for.</li>
+    <li><strong>Legal obligation</strong> — to keep medical records for the periods required by Kenyan law, and to comply with Ministry of Health and data-protection regulatory requirements.</li>
+    <li><strong>Vital interests</strong> — where a patient's life is at imminent risk, we may share information with emergency services or another clinician without prior consent.</li>
+  </ul>
+
+  <h2 id="who-we-share">5. Who we share it with</h2>
+  <p>We share your data only with the following categories of recipients, and only as needed for your care or our legal obligations:</p>
+
+  <h3>SPMH clinical staff</h3>
+  <p>Your treating doctor, plus additional SPMH clinicians directly involved in your care. Our systems enforce role-based access and record every access to a patient record in an immutable audit log.</p>
+
+  <h3>Regulated service providers (data processors)</h3>
+  <ul>
+    <li><strong>Supabase Inc.</strong> — database and authentication (Frankfurt, EU)</li>
+    <li><strong>Vercel Inc.</strong> — website hosting (global CDN)</li>
+    <li><strong>Daily.co</strong> — video consultation infrastructure (consultations only)</li>
+    <li><strong>Safaricom PLC</strong> — M-Pesa payments (reference number only)</li>
+    <li><strong>Africa's Talking</strong> — SMS notifications (phone number only)</li>
+    <li><strong>Resend</strong> — email notifications (email address only)</li>
+  </ul>
+  <p>Each operates under a data-processing agreement that restricts their use of your data to the specific service they provide.</p>
+
+  <h3>Regulators and authorities</h3>
+  <p>We will disclose data when compelled by a court order, a lawful request from the Office of the Data Protection Commissioner (ODPC), the Ministry of Health, or a professional regulatory body. When permitted, we will notify you before disclosure.</p>
+
+  <h3>Other healthcare providers, with your consent</h3>
+  <p>If your treating doctor refers you to another facility, we will share the clinical information needed for that referral — with your consent, except in emergencies.</p>
+
+  <p><strong>We do not sell your data. We do not share it for advertising or profiling.</strong></p>
+
+  <h2 id="retention">6. How long we keep it</h2>
+  <table>
+    <thead>
+      <tr><th>Data category</th><th>Retention period</th><th>Basis</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Clinical records (notes, prescriptions, diagnoses)</td><td>7 years from last consultation</td><td>Kenya Health Act 2017; professional record-keeping standards</td></tr>
+      <tr><td>Clinical records for patients who were minors</td><td>Until age 25 (7 years post-majority)</td><td>Professional standards for minors</td></tr>
+      <tr><td>Payment records</td><td>7 years</td><td>Tax and audit obligations</td></tr>
+      <tr><td>Audit logs (record access events)</td><td>7 years</td><td>Accountability under DPA 2019</td></tr>
+      <tr><td>Consent records</td><td>7 years</td><td>Evidence of consent under DPA 2019</td></tr>
+      <tr><td>Account and profile data after account deletion</td><td>30 days, then anonymised</td><td>Operational necessity</td></tr>
+      <tr><td>Video consultations</td><td>Not recorded — nothing to retain</td><td>—</td></tr>
+    </tbody>
+  </table>
+  <p>When a retention period ends, data is securely deleted or irreversibly anonymised.</p>
+
+  <h2 id="security">7. How we protect it</h2>
+  <ul>
+    <li><strong>Encryption in transit:</strong> TLS 1.3 for all traffic between your browser and our servers.</li>
+    <li><strong>Encryption at rest:</strong> AES-256 for all data stored in our database.</li>
+    <li><strong>Access control:</strong> row-level security policies at the database level ensure your record is visible only to you, your treating doctor, and authorised SPMH staff.</li>
+    <li><strong>Authentication:</strong> passwords are hashed using industry-standard methods; multi-factor authentication is available for all accounts and required for staff.</li>
+    <li><strong>Audit:</strong> every view or edit of a patient record is written to an insert-only audit log that cannot be modified or deleted, even by an administrator.</li>
+    <li><strong>Data minimisation:</strong> we collect only what is needed for care, payment, and legal compliance.</li>
+  </ul>
+
+  <h2 id="cross-border">8. Cross-border storage</h2>
+  <p>
+    Your data is stored in the <strong>European Union (Frankfurt, Germany)</strong> on infrastructure provided by Supabase Inc., and served from Vercel's global edge network. No clinical data leaves this infrastructure without encryption.
+  </p>
+  <p>
+    This transfer is permitted under DPA 2019 section 48 (transfer to jurisdictions with adequate protection) and relies on standard contractual clauses with our processors. No patient data is stored on servers located in countries without an adequacy determination.
+  </p>
+
+  <h2 id="your-rights">9. Your rights</h2>
+  <p>Under the DPA 2019, you have the right to:</p>
+  <ul>
+    <li><strong>Be informed</strong> about how we handle your data (this document).</li>
+    <li><strong>Access</strong> the personal data we hold about you.</li>
+    <li><strong>Correct</strong> inaccurate data.</li>
+    <li><strong>Delete</strong> your data, subject to our legal obligation to retain clinical records for the periods listed in section 6.</li>
+    <li><strong>Object</strong> to processing based on legitimate interests.</li>
+    <li><strong>Withdraw consent</strong> at any time, without affecting the lawfulness of processing that occurred before withdrawal.</li>
+    <li><strong>Data portability</strong> — receive your data in a structured, machine-readable format.</li>
+    <li><strong>Lodge a complaint</strong> with the Office of the Data Protection Commissioner (see section 14).</li>
+  </ul>
+  <p>To exercise any right, email <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a>. We will respond within 30 days (the statutory maximum under DPA 2019) and usually much sooner.</p>
+
+  <h2 id="children">10. Children's data</h2>
+  <p>
+    Patients under 18 must be registered by a parent or legal guardian. The guardian must participate in the consultation and provides consent on the child's behalf. We retain children's clinical records until the patient reaches 25, to comply with medical record-keeping standards for minors.
+  </p>
+  <p>
+    SPMH does not knowingly collect data from children under 18 without a parent or guardian's consent. If you believe a child has registered without guardian consent, contact <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a> immediately and we will investigate.
+  </p>
+
+  <h2 id="consent">11. Consent and versioning</h2>
+  <p>
+    When you register, you accept three documents: this Privacy Policy, the Terms of Telemedicine, and the Data Protection Notice. For each acceptance, we record:
+  </p>
+  <ul>
+    <li>Your user ID</li>
+    <li>Which document and which version you accepted</li>
+    <li>A cryptographic hash of the document text (so we can prove exactly what you agreed to)</li>
+    <li>The date and time of acceptance</li>
+    <li>The IP address and browser you used</li>
+  </ul>
+  <p>
+    This record is kept for 7 years as evidence of consent under DPA 2019. If we materially change any of these documents, we will ask you to accept the new version before continuing to use the service.
+  </p>
+
+  <h2 id="changes">12. Changes to this policy</h2>
+  <p>
+    We may update this policy from time to time to reflect changes in our practices, technology, or the law. When we do, we will:
+  </p>
+  <ul>
+    <li>Update the "Last updated" date at the top of this page</li>
+    <li>Publish the new version number</li>
+    <li>Notify registered users by email for material changes, at least 14 days before the change takes effect</li>
+    <li>Require you to re-accept the new version before your next consultation</li>
+  </ul>
+  <p>Previous versions are available on request from the DPO.</p>
+
+  <h2 id="contact">13. How to contact us</h2>
+  <p>For any question, concern, or request related to your data:</p>
+  <ul>
+    <li><strong>Email:</strong> <a href="mailto:dpo@spmh.co.ke">dpo@spmh.co.ke</a></li>
+    <li><strong>Postal:</strong> Data Protection Officer, St. Paul's Mission Hospital, P.O. Box 426, Homa Bay, Kenya</li>
+    <li><strong>In person:</strong> SPMH Reception, Homa Bay (Mon–Sat, 8 AM–5 PM)</li>
+  </ul>
+
+  <h2 id="complaints">14. How to complain</h2>
+  <p>
+    If you are not satisfied with our response to a data-protection concern, you have the right to lodge a complaint with the <strong>Office of the Data Protection Commissioner (ODPC) of Kenya</strong>:
+  </p>
+  <ul>
+    <li><strong>Website:</strong> <a href="https://www.odpc.go.ke" target="_blank" rel="noopener noreferrer">www.odpc.go.ke</a></li>
+    <li><strong>Email:</strong> <a href="mailto:complaints@odpc.go.ke">complaints@odpc.go.ke</a></li>
+    <li><strong>Phone:</strong> +254 (0) 20 460 4200</li>
+    <li><strong>Postal:</strong> Office of the Data Protection Commissioner, Britam Tower, 7th Floor, Hospital Road, Upper Hill, Nairobi</li>
+  </ul>
+  <p>We encourage you to contact us first so we can try to resolve the issue directly.</p>
+</LegalLayout>

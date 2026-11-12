@@ -1,0 +1,339 @@
+---
+export const prerender = false;
+
+import LandingLayout from '../layout/LandingLayout.astro';
+import { getSupabase } from '../lib/supabase';
+
+const supabase = getSupabase();
+const { data: rows, error } = await supabase
+  .from('specialties')
+  .select('slug,name,description,fee_kes,duration_minutes,sort_order')
+  .eq('is_active', true)
+  .order('sort_order');
+
+if (error) console.error('specialties fetch:', error);
+
+const meta: Record<string, { icon: string; conditions: string[]; whatToPrepare: string[]; idealFor: string[] }> = {
+  'general-medicine': {
+    icon: '<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/>',
+    conditions: ['Colds, coughs and flu', 'Fever and body aches', 'Headaches and migraines', 'Skin rashes', 'Prescription refills', 'Travel health advice'],
+    whatToPrepare: ['List of current medications', 'Recent BP or temperature readings', 'Description of symptoms (when started, severity)', 'Any recent hospital visits'],
+    idealFor: ['Acute illnesses', 'Prescription refills', 'Travel health', 'Wellness check-ins'],
+  },
+    'nutrition': {
+    icon: '<path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/>',
+    conditions: [
+      'Weight management (over- and under-weight)',
+      'Diabetes and pre-diabetes meal planning',
+      'Hypertension diet and salt reduction',
+      'Pregnancy and antenatal nutrition',
+      'Child growth and malnutrition follow-up',
+      'HIV/TB nutritional support',
+      'Post-surgery recovery diet',
+      'Food allergies and intolerances',
+    ],
+    whatToPrepare: [
+      'A 3-day food diary (what you ate, when, roughly how much)',
+      'Current weight and height (if known)',
+      'Any recent lab results (HbA1c, lipids, haemoglobin)',
+      'List of current medications or supplements',
+      'Any known food allergies or cultural dietary restrictions',
+    ],
+    idealFor: [
+      'Chronic disease nutrition',
+      'Child growth & development',
+      'Maternal nutrition',
+      'Weight management',
+    ],
+  },
+  'general-surgery': {
+    icon: '<path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/>',
+    conditions: ['Post-operative wound review', 'Pre-operative assessment', 'Minor surgical advice', 'Suture removal questions', 'Hernia / lump assessment', 'Post-surgical pain'],
+    whatToPrepare: ['Discharge summary or operation notes', 'Photos of the wound (if appropriate)', 'Current pain medication list', 'Temperature readings'],
+    idealFor: ['Post-op follow-up', 'Surgical consultations', 'Wound questions'],
+  },
+  'obstetrics-gynaecology': {
+    icon: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+    conditions: ['Antenatal check-ins', 'Postnatal care (6-week checkup)', 'Menstrual irregularities', 'Contraception counselling', 'Pregnancy concerns', 'Menopause support'],
+    whatToPrepare: ['Antenatal card or medical booklet', 'Current BP/weight readings', 'List of current medications and supplements', 'Previous pregnancy history (if any)'],
+    idealFor: ['Pregnancy monitoring', "Women's health", 'Postpartum care', 'Contraception advice'],
+  },
+  'paediatrics': {
+    icon: '<path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5.9 3.5 2.5s-.9 2.5-2 2.5c-.8 0-1.5-.4-1.5-1"/>',
+    conditions: ['Fever, cough and colds in children', 'Growth and development concerns', 'Diarrhoea and vomiting', 'Skin rashes and allergies', 'Immunisation schedule', 'Feeding and nutrition'],
+    whatToPrepare: ["Child's age, weight and temperature", 'Immunisation record/card', 'Description of symptoms', 'Current medications or supplements'],
+    idealFor: ['Childhood illnesses', 'Growth monitoring', 'Immunisation guidance'],
+  },
+  'dermatology': {
+    icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    conditions: ['Rashes and eczema', 'Acne and skin infections', 'Hair loss or scalp issues', 'Nail changes', 'Chronic skin conditions', 'Allergic reactions'],
+    whatToPrepare: ['Photos of the affected area in good light', 'Duration of the problem', 'Current skin products or medications', 'Any known allergies'],
+    idealFor: ['Skin concerns', 'Chronic skin disease', 'Cosmetic dermatology advice'],
+  },
+  'ophthalmology': {
+    icon: '<path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/>',
+    conditions: ['Blurred or decreased vision', 'Red or painful eyes', 'Diabetic eye screening', 'Glasses prescription review', 'Post-operative eye checks', 'Floaters and flashes'],
+    whatToPrepare: ['Current glasses/contacts prescription', 'Recent eye test results', 'List of eye medications', 'Any recent eye trauma'],
+    idealFor: ['Vision problems', 'Routine eye exams', 'Diabetic eye care'],
+  },
+  'dentistry': {
+    icon: '<path d="M12 5.5c-1.5-2-5-3-6.5 0S3 12 5 15c1.5 2 2 3 2.5 5 .3 1.2 1 1.5 1.5 1 .8-.7 1-2 1-3.5 0-2 1-2 2-2s2 0 2 2c0 1.5.2 2.8 1 3.5.5.5 1.2.2 1.5-1 .5-2 1-3 2.5-5 2-3 1-6.5-.5-9.5S13.5 3.5 12 5.5Z"/>',
+    conditions: ['Toothache and sensitivity', 'Gum swelling or bleeding', 'Oral hygiene advice', 'Post-extraction follow-up', 'Denture fitting questions', 'Bad breath'],
+    whatToPrepare: ['Description of pain (when, how long, triggers)', 'Photos of affected area (if visible)', 'Current medications', 'Any recent dental work'],
+    idealFor: ['Dental advice', 'Post-procedure follow-up', 'Oral hygiene'],
+  },
+  'mental-health': {
+    icon: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>',
+    conditions: ['Anxiety and stress', 'Depression and low mood', 'Grief and loss', 'Trauma and PTSD support', 'Relationship concerns', 'Sleep difficulties'],
+    whatToPrepare: ['Quiet, private space for the consultation', 'Any previous mental health treatment', 'Current medications (especially psychiatric)', 'Willingness to share what is troubling you'],
+    idealFor: ['Mental health support', 'Counselling', 'Stress management', 'Grief support'],
+  },
+};
+
+const items = (rows ?? []).map((s) => ({
+  ...s,
+  icon: meta[s.slug]?.icon ?? '',
+  conditions: meta[s.slug]?.conditions ?? [],
+  whatToPrepare: meta[s.slug]?.whatToPrepare ?? [],
+  idealFor: meta[s.slug]?.idealFor ?? [],
+}));
+
+const canonical = 'https://telemedicine.spmh.co.ke/specialties';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://telemedicine.spmh.co.ke' },
+        { '@type': 'ListItem', position: 2, name: 'Specialties', item: canonical },
+      ],
+    },
+    {
+      '@type': 'MedicalWebPage',
+      name: 'Specialties — SPMH Telemedicine',
+      url: canonical,
+      description: 'Eight medical specialties available by secure video consultation at St. Paul\'s Mission Hospital, Homa Bay.',
+      publisher: {
+        '@type': 'MedicalBusiness',
+        name: "St. Paul's Mission Hospital, Homa Bay",
+        url: 'https://www.spmh.co.ke',
+      },
+    },
+  ],
+};
+---
+<LandingLayout
+  title="Specialties — SPMH Telemedicine"
+  description="Browse the eight medical specialties offered by SPMH Telemedicine. Transparent fees, secure video consultations, licensed SPMH clinicians."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+
+  <!-- Compact hero -->
+  <section class="border-b border-border bg-white">
+    <div class="mx-auto max-w-7xl px-4 pt-10 pb-12 md:px-6 md:pt-14 md:pb-16 lg:px-8">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex items-center gap-2 text-xs text-muted">
+          <li><a href="/" class="hover:text-primary">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-semibold text-slate-700">Specialties</li>
+        </ol>
+      </nav>
+
+      <h1 class="mt-6 font-display-bold text-4xl text-secondary md:text-5xl">
+        Eight specialties. One team.
+      </h1>
+      <div class="mt-4 h-px w-12 bg-gold" aria-hidden="true"></div>
+      <p class="mt-6 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
+        Every consultation is with a licensed SPMH clinician by secure video. Fees shown upfront. No travel, no queues.
+      </p>
+    </div>
+  </section>
+
+  <!-- Filter + search -->
+  <section id="filter" class="sticky top-16 z-30 border-b border-border bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6 lg:px-8">
+      <div class="relative flex-1 max-w-md">
+        <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input
+          id="specialty-search"
+          type="search"
+          placeholder="Search by specialty or condition…"
+          aria-label="Search specialties"
+          class="block h-10 w-full rounded-lg border border-border bg-white pl-9 pr-3 text-sm placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15"
+        />
+      </div>
+      <p id="search-count" class="hidden text-xs text-muted sm:block" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- Specialty cards -->
+  <section class="bg-surface">
+    <div class="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16 lg:px-8">
+      {items.length === 0 && (
+        <div class="rounded-2xl border border-border bg-white p-12 text-center">
+          <p class="text-sm text-slate-600">Specialties will appear here once activated. Check back soon.</p>
+        </div>
+      )}
+
+      <div id="specialty-grid" class="grid gap-6 md:grid-cols-2">
+        {items.map((s) => (
+          <article
+            id={s.slug}
+            data-search={`${s.name.toLowerCase()} ${s.conditions.join(' ').toLowerCase()}`}
+            class="group scroll-mt-32 rounded-2xl border border-border bg-white transition-all hover:border-primary/30 hover:shadow-md"
+          >
+            <!-- Header (always visible) -->
+            <div class="p-6 md:p-8">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex items-start gap-4">
+                  <span class="grid h-12 w-12 flex-shrink-0 place-items-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={s.icon} />
+                  </span>
+                  <div>
+                    <h2 class="font-display-bold text-xl text-secondary md:text-2xl">{s.name}</h2>
+                    <p class="mt-1 text-sm text-slate-600">{s.description}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fee + duration -->
+              <div class="mt-6 flex items-center gap-6 border-y border-border py-4">
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-muted">Fee</p>
+                  <p class="font-display-bold text-2xl text-primary">KES {s.fee_kes.toLocaleString()}</p>
+                </div>
+                <div class="h-8 w-px bg-border"></div>
+                <div>
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-muted">Typical</p>
+                  <p class="font-display-bold text-2xl text-secondary">{s.duration_minutes} min</p>
+                </div>
+                <div class="ml-auto hidden text-xs text-muted sm:block">
+                  <p>Ideal for</p>
+                  <p class="mt-0.5 font-semibold text-slate-700">{s.idealFor[0] ?? 'Consultation'}</p>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={`/auth/register?specialty=${s.slug}`}
+                  class="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+                >
+                  Book {s.name}
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <button
+                  type="button"
+                  data-expand={s.slug}
+                  aria-expanded="false"
+                  aria-controls={`panel-${s.slug}`}
+                  class="inline-flex h-11 items-center justify-center rounded-lg border border-border px-5 text-sm font-semibold text-slate-700 transition-colors hover:border-primary/40 hover:text-primary"
+                >
+                  <span data-expand-label>See details</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Expandable detail -->
+            <div id={`panel-${s.slug}`} hidden class="border-t border-border bg-surface/50 px-6 py-6 md:px-8">
+              <div class="grid gap-8 md:grid-cols-2">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-wider text-primary">Conditions treated</p>
+                  <ul class="mt-3 space-y-2">
+                    {s.conditions.map((c) => (
+                      <li class="flex items-start gap-2 text-sm text-slate-700">
+                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-wider text-primary">What to prepare</p>
+                  <ul class="mt-3 space-y-2">
+                    {s.whatToPrepare.map((c) => (
+                      <li class="flex items-start gap-2 text-sm text-slate-700">
+                        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-gold" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div id="empty-state" hidden class="mt-12 rounded-2xl border border-border bg-white p-12 text-center">
+        <p class="font-display-bold text-lg text-secondary">No specialties match your search.</p>
+        <p class="mt-2 text-sm text-slate-600">Try a different condition or clear the search.</p>
+        <button type="button" id="clear-search" class="mt-6 text-sm font-semibold text-primary hover:underline">Clear search</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="relative overflow-hidden bg-ink">
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(200,169,81,0.14),transparent_60%)]" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-3xl px-4 py-20 text-center md:px-6 md:py-24">
+      <h2 class="font-display text-3xl text-white md:text-4xl">Not sure which specialty you need?</h2>
+      <p class="mx-auto mt-4 max-w-xl text-base text-white/70">
+        Register for a General Medicine consultation. Our doctor will assess your concern and refer you to the right specialist if needed.
+      </p>
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <a href="/auth/register?specialty=general-medicine" class="inline-flex h-12 items-center gap-2 rounded-lg bg-accent px-6 font-semibold text-white transition-opacity hover:opacity-90">
+          Book a general consultation
+        </a>
+        <a href="/how-it-works" class="inline-flex h-12 items-center gap-2 rounded-lg border border-white/25 px-6 font-semibold text-white transition-colors hover:bg-white/10">
+          See how it works
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Expand / collapse detail panels
+    document.querySelectorAll<HTMLButtonElement>('[data-expand]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const slug = btn.dataset.expand!;
+        const panel = document.getElementById(`panel-${slug}`);
+        const label = btn.querySelector<HTMLElement>('[data-expand-label]');
+        if (!panel) return;
+        const isOpen = !panel.hidden;
+        panel.hidden = isOpen;
+        btn.setAttribute('aria-expanded', String(!isOpen));
+        if (label) label.textContent = isOpen ? 'See details' : 'Hide details';
+      });
+    });
+
+    // Search / filter
+    const searchInput = document.getElementById('specialty-search') as HTMLInputElement | null;
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-search]'));
+    const emptyState = document.getElementById('empty-state');
+    const countEl = document.getElementById('search-count');
+
+    function filterCards() {
+      const q = (searchInput?.value ?? '').trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const matches = !q || (card.dataset.search ?? '').includes(q);
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+      if (emptyState) emptyState.hidden = visible > 0;
+      if (countEl) {
+        countEl.textContent = q ? `${visible} of ${cards.length}` : '';
+      }
+    }
+
+    searchInput?.addEventListener('input', filterCards);
+
+    document.getElementById('clear-search')?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      filterCards();
+      searchInput?.focus();
+    });
+  </script>
+</LandingLayout>
