@@ -1,0 +1,20 @@
+---
+import LandingLayout from '../../layout/LandingLayout.astro';
+import AppointmentConfirmation from '../../components/portal/AppointmentConfirmation.jsx';
+
+const id = Astro.url.searchParams.get('id') ?? '';
+---
+<LandingLayout title="Booking confirmed — SPMH Telemedicine" noindex={true}>
+  <section class="bg-surface">
+    <div class="mx-auto max-w-2xl px-4 py-10 md:px-6 md:py-14 lg:px-8">
+      {id ? (
+        <AppointmentConfirmation client:load appointmentId={id} />
+      ) : (
+        <div class="rounded-2xl border border-border bg-white p-8 text-center">
+          <p class="text-sm text-slate-600">No appointment specified.</p>
+          <a href="/portal" class="mt-3 inline-block text-sm font-semibold text-primary hover:underline">Go to portal</a>
+        </div>
+      )}
+    </div>
+  </section>
+</LandingLayout>

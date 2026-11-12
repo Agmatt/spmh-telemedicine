@@ -1,0 +1,29 @@
+---
+import LandingLayout from '../../layout/LandingLayout.astro';
+import BookingFlow from '../../components/portal/BookingFlow.jsx';
+
+const specialty = Astro.url.searchParams.get('specialty') ?? '';
+---
+<LandingLayout title="Book a consultation — SPMH Telemedicine" noindex={true}>
+  <section class="bg-surface">
+    <div class="mx-auto max-w-3xl px-4 py-8 md:px-6 md:py-12 lg:px-8">
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex items-center gap-2 text-xs text-muted">
+          <li><a href="/" class="hover:text-primary">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/portal" class="hover:text-primary">Portal</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="font-semibold text-slate-700">Book</li>
+        </ol>
+      </nav>
+
+      <div class="mb-8">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">New booking</p>
+        <h1 class="mt-2 font-display-bold text-3xl text-secondary md:text-4xl">Book a consultation</h1>
+        <p class="mt-2 text-sm text-slate-600">Four quick steps — specialty, doctor, time, review.</p>
+      </div>
+
+      <BookingFlow client:load initialSpecialty={specialty} />
+    </div>
+  </section>
+</LandingLayout>
