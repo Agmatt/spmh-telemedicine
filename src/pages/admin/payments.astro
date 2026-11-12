@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../layout/AdminLayout.astro';
+import AdminShell from '../../components/admin/AdminShell.jsx';
+import PaymentsLedger from '../../components/admin/PaymentsLedger.jsx';
+import '../../styles/global.css';
+---
+<AdminLayout title="Payments">
+  <AdminShell client:load activePage="payments">
+    <PaymentsLedger client:load />
+  </AdminShell>
+</AdminLayout>

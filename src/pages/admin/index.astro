@@ -1,10 +1,11 @@
 ---
-import LandingLayout from '../../layout/LandingLayout.astro';
+import AdminLayout from '../../layout/AdminLayout.astro';
+import AdminShell from '../../components/admin/AdminShell.jsx';
+import AdminOverview from '../../components/admin/AdminOverview.jsx';
+import '../../styles/global.css';
 ---
-<LandingLayout title="Admin console — SPMH Telemedicine" noindex>
-  <section class="mx-auto max-w-4xl px-4 py-16">
-    <p class="text-xs font-bold uppercase tracking-wider text-primary">Admin console</p>
-    <h1 class="mt-2 font-display text-3xl font-bold text-secondary">Operations</h1>
-    <p class="mt-2 text-slate-600">Staff, specialties, appointments, payments, audit log. Coming in Wave 5.</p>
-  </section>
-</LandingLayout>
+<AdminLayout title="Overview">
+  <AdminShell client:load activePage="overview">
+    <AdminOverview client:load />
+  </AdminShell>
+</AdminLayout>

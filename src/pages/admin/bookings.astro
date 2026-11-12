@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../layout/AdminLayout.astro';
+import AdminShell from '../../components/admin/AdminShell.jsx';
+import BookingsQueue from '../../components/admin/BookingsQueue.jsx';
+import '../../styles/global.css';
+---
+<AdminLayout title="Bookings">
+  <AdminShell client:load activePage="bookings">
+    <BookingsQueue client:load />
+  </AdminShell>
+</AdminLayout>

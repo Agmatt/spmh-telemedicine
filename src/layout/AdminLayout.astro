@@ -1,0 +1,17 @@
+---
+import BaseHead from '../components/layout/BaseHead.astro';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={`${title} — SPMH Admin`} noindex />
+  </head>
+  <body class="min-h-screen bg-surface text-slate-900">
+    <slot />
+  </body>
+</html>
