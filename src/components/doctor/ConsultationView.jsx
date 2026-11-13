@@ -152,8 +152,8 @@ export default function ConsultationView({ appointmentId }) {
           {roomUrl ? (
             <iframe
               src={roomUrl}
-              allow='camera; microphone; fullscreen; speaker; display-capture'
-              className='w-full h-full min-h-75 lg:min-h-0 border-0'
+              allow='camera; microphone; fullscreen; display-capture; autoplay'
+              className='w-full h-full min-h-[300px] lg:min-h-0 border-0'
             />
           ) : (
             <div className='grid h-full min-h-75 place-items-center text-slate-400 p-6 text-center'>

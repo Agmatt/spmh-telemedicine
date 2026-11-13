@@ -1,20 +1,30 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
+import jwt from 'jsonwebtoken';
 
 export const prerender = false;
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
 const SERVICE_KEY = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
-const DAILY_API_KEY = import.meta.env.DAILY_API_KEY;
+
+// 1. Properly declare the IDs
+const JAAS_APP_ID = import.meta.env.JAAS_APP_ID || process.env.JAAS_APP_ID;
+const JAAS_API_KEY_ID =
+  import.meta.env.JAAS_API_KEY_ID || process.env.JAAS_API_KEY_ID;
+
+// 2. Decode the Base64 Private Key safely
+const b64Key =
+  import.meta.env.JAAS_PRIVATE_KEY || process.env.JAAS_PRIVATE_KEY || '';
+const JAAS_PRIVATE_KEY = Buffer.from(b64Key, 'base64').toString('utf-8');
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (!DAILY_API_KEY) {
-      throw new Error('Missing DAILY_API_KEY in environment variables.');
+    if (!JAAS_APP_ID || !JAAS_API_KEY_ID || !JAAS_PRIVATE_KEY) {
+      throw new Error('Missing JaaS environment variables.');
     }
 
     const authHeader = request.headers.get('authorization') || '';
-    const jwt = authHeader.replace(/^Bearer\s+/i, '');
-    if (!jwt)
+    const jwtToken = authHeader.replace(/^Bearer\s+/i, '');
+    if (!jwtToken)
       return new Response(JSON.stringify({ error: 'Missing token' }), {
         status: 401,
       });
@@ -24,7 +34,8 @@ export const POST: APIRoute = async ({ request }) => {
     });
     const {
       data: { user },
-    } = await supabase.auth.getUser(jwt);
+    } = await supabase.auth.getUser(jwtToken);
+
     if (!user)
       return new Response(JSON.stringify({ error: 'Invalid token' }), {
         status: 401,
@@ -56,44 +67,35 @@ export const POST: APIRoute = async ({ request }) => {
 
     const roomName = `spmh-consult-${appointment_id}`;
 
-    // 1. Check if the room already exists
-    const getRes = await fetch(`https://api.daily.co/v1/rooms/${roomName}`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${DAILY_API_KEY}` },
-    });
-
-    if (getRes.ok) {
-      const existingRoom = await getRes.json();
-      return new Response(JSON.stringify({ url: existingRoom.url }), {
-        status: 200,
-      });
-    }
-
-    // 2. If it doesn't exist (404), create it
-    const createRes = await fetch('https://api.daily.co/v1/rooms', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${DAILY_API_KEY}`,
-      },
-      body: JSON.stringify({
-        name: roomName,
-        properties: {
-          enable_chat: true,
-          start_video_off: false,
-          start_audio_off: false,
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 2, // Expire in 2 hours
+    // Generate JaaS JWT
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+      aud: 'jitsi',
+      iss: 'chat',
+      sub: JAAS_APP_ID,
+      room: roomName,
+      exp: now + 60 * 60 * 2, // Expire in 2 hours
+      nbf: now - 10,
+      context: {
+        user: {
+          name: user.email,
+          email: user.email,
+          moderator: isDoctor, // Doctor gets moderator powers
         },
-      }),
+      },
+    };
+
+    const token = jwt.sign(payload, JAAS_PRIVATE_KEY, {
+      algorithm: 'RS256',
+      header: {
+        kid: JAAS_API_KEY_ID,
+        typ: 'JWT',
+      },
     });
 
-    const newRoom = await createRes.json();
-    if (!createRes.ok)
-      throw new Error(
-        newRoom.info || newRoom.error || 'Failed to create Daily room',
-      );
+    const roomUrl = `https://8x8.vc/${JAAS_APP_ID}/${roomName}?jwt=${token}`;
 
-    return new Response(JSON.stringify({ url: newRoom.url }), { status: 200 });
+    return new Response(JSON.stringify({ url: roomUrl }), { status: 200 });
   } catch (e: any) {
     console.error('API Error:', e.message);
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });
