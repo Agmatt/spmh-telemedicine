@@ -121,7 +121,7 @@ export default function ConsultationView({ appointmentId }) {
   return (
     <div className='flex flex-col lg:h-[calc(100vh-6rem)]'>
       {/* Header (Responsive) */}
-      <div className='mb-4 max-w-6xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4'>
+      <div className='mb-4 max-w-7xl px-4 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border'>
         <div>
           <h1 className='font-display-bold text-2xl text-secondary'>
             {data.appt.patient_name}
@@ -146,17 +146,17 @@ export default function ConsultationView({ appointmentId }) {
       </div>
 
       {/* Main Workspace Grid */}
-      <div className='grid flex-1 gap-4 lg:grid-cols-[1.3fr_1fr] lg:overflow-hidden'>
+      <div className='grid flex-1 px-4 gap-4 lg:grid-cols-[1.3fr_1fr] lg:overflow-hidden'>
         {/* Left: Video */}
-        <div className='flex flex-col overflow-hidden rounded-2xl border border-border bg-slate-900 min-h-[300px] lg:min-h-0 lg:h-full'>
+        <div className='flex flex-col overflow-hidden rounded-2xl border border-border bg-slate-900 min-h-75] lg:min-h-0 lg:h-full'>
           {roomUrl ? (
             <iframe
               src={roomUrl}
               allow='camera; microphone; fullscreen; speaker; display-capture'
-              className='w-full h-full min-h-[300px] lg:min-h-0 border-0'
+              className='w-full h-full min-h-75 lg:min-h-0 border-0'
             />
           ) : (
-            <div className='grid h-full min-h-[300px] place-items-center text-slate-400 p-6 text-center'>
+            <div className='grid h-full min-h-75 place-items-center text-slate-400 p-6 text-center'>
               <p className='text-sm'>
                 Click "Start Video Call" to begin the consultation.
               </p>
@@ -165,7 +165,7 @@ export default function ConsultationView({ appointmentId }) {
         </div>
 
         {/* Right: Notes & Rx */}
-        <div className='flex flex-col overflow-hidden rounded-2xl border border-border bg-white min-h-[400px] lg:min-h-0 lg:h-full'>
+        <div className='flex flex-col px-4 overflow-hidden rounded-2xl border border-border bg-white min-h-100 lg:min-h-0 lg:h-full'>
           <div className='flex border-b border-border bg-surface/50'>
             <button
               onClick={() => setTab('notes')}
