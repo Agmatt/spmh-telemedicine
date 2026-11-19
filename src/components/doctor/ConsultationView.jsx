@@ -153,7 +153,8 @@ export default function ConsultationView({ appointmentId }) {
             <iframe
               src={roomUrl}
               allow='camera; microphone; fullscreen; display-capture; autoplay'
-              className='w-full h-full min-h-[300px] lg:min-h-0 border-0'
+              className='w-full h-full border-0'
+              style={{ minHeight: '400px' }}
             />
           ) : (
             <div className='grid h-full min-h-75 place-items-center text-slate-400 p-6 text-center'>

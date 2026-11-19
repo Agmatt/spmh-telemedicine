@@ -5,23 +5,8 @@ import {
   createUserAccount,
   deleteUserAccount,
 } from '../../lib/admin';
+
 const ROLES = ['patient', 'receptionist', 'doctor', 'admin', 'supervisor'];
-
-    async function handleDelete(userId, email) {
-      if (
-        !confirm(
-          `CRITICAL: Permanently delete user ${email}? This cannot be undone.`,
-        )
-      )
-        return;
-      try {
-        await deleteUserAccount(userId);
-        load(); // Refresh the list
-      } catch (e) {
-        alert('Delete failed: ' + e.message);
-      }
-    }
-
 
 function badge(role) {
   const map = {
@@ -33,6 +18,7 @@ function badge(role) {
   };
   return map[role] ?? 'bg-slate-100 text-slate-700';
 }
+
 function fmt(iso) {
   if (!iso) return '—';
   return new Date(iso).toLocaleDateString('en-KE', {
@@ -54,24 +40,29 @@ export default function StaffManager() {
     setLoading(true);
     try {
       setRows(await fetchStaff());
+      setError(null);
     } catch (e) {
       setError(e.message);
     } finally {
       setLoading(false);
     }
   }
+
   useEffect(() => {
     load();
   }, []);
 
-  const filtered = rows.filter((r) => {
-    if (!search.trim()) return true;
-    const q = search.toLowerCase();
-    return (
-      (r.email ?? '').toLowerCase().includes(q) ||
-      (r.full_name ?? '').toLowerCase().includes(q)
-    );
-  });
+  async function handleDelete(userId, email) {
+    if (!confirm(`Permanently delete user ${email}? This cannot be undone.`))
+      return;
+    try {
+      await deleteUserAccount(userId);
+    } catch (e) {
+      alert('Delete failed: ' + e.message);
+      return;
+    }
+    load();
+  }
 
   async function changeRole(userId, role) {
     const target = rows.find((r) => r.id === userId);
@@ -88,12 +79,20 @@ export default function StaffManager() {
     }
     try {
       await setUserRole(userId, role);
-      load();
     } catch (e) {
       alert(e.message);
-      load();
     }
+    load();
   }
+
+  const filtered = rows.filter((r) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      (r.email ?? '').toLowerCase().includes(q) ||
+      (r.full_name ?? '').toLowerCase().includes(q)
+    );
+  });
 
   return (
     <div>

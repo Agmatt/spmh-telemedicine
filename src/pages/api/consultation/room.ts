@@ -93,8 +93,8 @@ export const POST: APIRoute = async ({ request }) => {
       },
     });
 
-    const roomUrl = `https://8x8.vc/${JAAS_APP_ID}/${roomName}?jwt=${token}`;
-
+    const roomUrl = `https://8x8.vc/${JAAS_APP_ID}/${roomName}?jwt=${token}#config.disableDeepLinking=true`;
+    
     return new Response(JSON.stringify({ url: roomUrl }), { status: 200 });
   } catch (e: any) {
     console.error('API Error:', e.message);

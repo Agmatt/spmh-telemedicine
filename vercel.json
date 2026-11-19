@@ -4,13 +4,12 @@
       "source": "/(.*)",
       "headers": [
         { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" },
-        { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(self), microphone=(self), geolocation=()" },
+        { "key": "Permissions-Policy", "value": "camera=(self \"https://*.8x8.vc\" \"https://*.8x8.com\"), microphone=(self \"https://*.8x8.vc\" \"https://*.8x8.com\"), geolocation=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.daily.co; frame-src 'self' https://*.daily.co; frame-ancestors 'none';"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.8x8.vc https://*.8x8.com https://*.jitsi.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.8x8.vc wss://*.8x8.vc https://*.8x8.com https://*.jitsi.net; frame-src 'self' https://*.8x8.vc https://*.8x8.com https://*.jitsi.net; media-src 'self' https://*.8x8.vc https://*.8x8.com https://*.jitsi.net;"
         }
       ]
     },
@@ -24,10 +23,6 @@
     },
     {
       "source": "/doctor/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }]
-    },
-    {
-      "source": "/account/(.*)",
       "headers": [{ "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }]
     }
   ]
