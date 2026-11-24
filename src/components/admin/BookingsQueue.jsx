@@ -5,20 +5,53 @@ import {
   cancelAppointment,
 } from '../../lib/admin';
 
-  async function handleDelete() {
-    if (!confirm('Permanently delete this appointment and its payment record?'))
-      return;
-    setBusy(true);
-    setErr(null);
-    try {
-      await deleteAppointment(appointment.id);
-      onChanged();
-      onClose();
-    } catch (e) {
-      setErr(e.message);
-      setBusy(false);
-    }
+function exportToCSV(data, filename) {
+  if (!data.length) return;
+  const headers = [
+    'Date',
+    'Patient',
+    'Phone',
+    'Specialty',
+    'Amount (KES)',
+    'Status',
+    'M-Pesa Ref',
+  ];
+  const csvContent = [
+    headers.join(','),
+    ...data.map((r) =>
+      [
+        new Date(r.created_at).toLocaleDateString('en-KE'),
+        `"${r.patient_name || ''}"`,
+        `"${r.patient_phone || ''}"`,
+        `"${r.specialty_name || ''}"`,
+        r.amount_kes,
+        r.status,
+        r.reference || '',
+      ].join(','),
+    ),
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}-${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
+async function handleDelete() {
+  if (!confirm('Permanently delete this appointment and its payment record?'))
+    return;
+  setBusy(true);
+  setErr(null);
+  try {
+    await deleteAppointment(appointment.id);
+    onChanged();
+    onClose();
+  } catch (e) {
+    setErr(e.message);
+    setBusy(false);
   }
+}
 
 function fmt(iso) {
   return new Date(iso).toLocaleString('en-KE', {
@@ -141,23 +174,41 @@ export default function BookingsQueue() {
             Confirm payments, cancel, or review any appointment.
           </p>
         </div>
-        <button
-          onClick={load}
-          className='inline-flex h-9 items-center gap-2 rounded-lg border border-border px-3 text-xs font-semibold text-slate-700 hover:border-primary/40 hover:text-primary'>
-          <svg
-            className='h-4 w-4'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            aria-hidden='true'>
-            <path d='M21 12a9 9 0 1 1-6.219-8.56' />
-          </svg>
-          Refresh
-        </button>
+
+        {/* Notice this new wrapper div with gap-2 */}
+        <div className='flex items-center gap-2'>
+          <button
+            onClick={() =>
+              exportToCSV(
+                filtered.map((r) => ({
+                  ...r,
+                  reference: r.payment_reference,
+                  amount_kes: r.fee_kes,
+                })),
+                'spmh-bookings',
+              )
+            }
+            className='inline-flex h-9 items-center gap-2 rounded-lg bg-slate-800 px-3 text-xs font-semibold text-white hover:bg-slate-900'>
+            Export CSV
+          </button>
+          <button
+            onClick={load}
+            className='inline-flex h-9 items-center gap-2 rounded-lg border border-border px-3 text-xs font-semibold text-slate-700 hover:border-primary/40 hover:text-primary'>
+            <svg
+              className='h-4 w-4'
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              aria-hidden='true'>
+              <path d='M21 12a9 9 0 1 1-6.219-8.56' />
+            </svg>
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

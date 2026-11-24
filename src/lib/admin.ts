@@ -353,3 +353,13 @@ export async function deletePayment(id: string): Promise<void> {
   const { error } = await supabase.rpc('admin_delete_payment', { p_id: id });
   if (error) throw error;
 }
+
+export async function createDoctorPlaceholder(
+  specialtyId: string,
+): Promise<string> {
+  const { data, error } = await supabase.rpc('admin_create_doctor', {
+    p_specialty_id: specialtyId,
+  });
+  if (error) throw error;
+  return data as string;
+}

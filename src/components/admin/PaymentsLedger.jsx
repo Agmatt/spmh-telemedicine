@@ -2,6 +2,39 @@ import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { fetchAdminPayments, deletePayment } from '../../lib/admin';
 
+function exportToCSV(data, filename) {
+  if (!data.length) return;
+  const headers = [
+    'Date',
+    'Patient',
+    'Phone',
+    'Specialty',
+    'Amount (KES)',
+    'Status',
+    'M-Pesa Ref',
+  ];
+  const csvContent = [
+    headers.join(','),
+    ...data.map((r) =>
+      [
+        new Date(r.created_at).toLocaleDateString('en-KE'),
+        `"${r.patient_name || ''}"`,
+        `"${r.patient_phone || ''}"`,
+        `"${r.specialty_name || ''}"`,
+        r.amount_kes,
+        r.status,
+        r.reference || '',
+      ].join(','),
+    ),
+  ].join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `${filename}-${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+}
+
 function fmt(iso) {
   return new Date(iso).toLocaleString('en-KE', {
     timeZone: 'Africa/Nairobi',
@@ -94,35 +127,29 @@ export default function PaymentsLedger() {
 
   return (
     <div>
-      <div className='mb-6 flex flex-wrap items-center justify-between gap-4'>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className='text-xs font-bold uppercase tracking-[0.2em] text-primary'>
-            Finance
-          </p>
-          <h1 className='mt-2 font-display-bold text-3xl text-secondary md:text-4xl'>
-            Payments
-          </h1>
-          <p className='mt-2 text-sm text-slate-600'>
-            Every consultation payment record, pending and confirmed.
-          </p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Finance</p>
+          <h1 className="mt-2 font-display-bold text-3xl text-secondary md:text-4xl">Payments</h1>
+          <p className="mt-2 text-sm text-slate-600">Every consultation payment record, pending and confirmed.</p>
         </div>
-        <button
-          onClick={load}
-          className='inline-flex h-9 items-center gap-2 rounded-lg border border-border px-3 text-xs font-semibold text-slate-700 hover:border-primary/40 hover:text-primary'>
-          <svg
-            className='h-4 w-4'
-            xmlns='http://www.w3.org/2000/svg'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            aria-hidden='true'>
-            <path d='M21 12a9 9 0 1 1-6.219-8.56' />
-          </svg>
-          Refresh
-        </button>
+
+        {/* Notice this new wrapper div with gap-2 */}
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => exportToCSV(filtered, 'spmh-payments')} 
+            className="inline-flex h-9 items-center gap-2 rounded-lg bg-slate-800 px-3 text-xs font-semibold text-white hover:bg-slate-900"
+          >
+            Export CSV
+          </button>
+          <button 
+            onClick={load} 
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-border px-3 text-xs font-semibold text-slate-700 hover:border-primary/40 hover:text-primary"
+          >
+            <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className='mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4'>
